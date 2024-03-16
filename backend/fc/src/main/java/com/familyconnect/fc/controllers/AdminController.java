@@ -1,18 +1,18 @@
-package com.familyconnect.fc.controller;
+package com.familyconnect.fc.controllers;
 
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/admin")
 @CrossOrigin("*")
 public class AdminController {
-
+    
     @GetMapping("/")
-    public String helloAdminController() {
-        return "Admin Access Level";
+    public String helloAdmineController(){
+        return "Admin level access";
     }
+
 }
