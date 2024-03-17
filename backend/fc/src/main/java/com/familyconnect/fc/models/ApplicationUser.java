@@ -17,6 +17,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name="users")
@@ -24,10 +26,14 @@ public class ApplicationUser implements UserDetails{
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
+	
     private Integer userId;
 	@Column(unique=true)
+	@Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}",flags = Pattern.Flag.CASE_INSENSITIVE)
     private String username;
     private String password;
+
+	private String name;
 
     @ManyToMany(fetch=FetchType.EAGER)
     @JoinTable(
@@ -43,10 +49,10 @@ public class ApplicationUser implements UserDetails{
 	}
 	
 
-	public ApplicationUser(Integer userId, String username, String password, Set<Role> authorities) {
+	public ApplicationUser( String username,String name, String password, Set<Role> authorities) {
 		super();
-		this.userId = userId;
 		this.username = username;
+		this.name = name;
 		this.password = password;
 		this.authorities = authorities;
 	}
@@ -79,14 +85,16 @@ public class ApplicationUser implements UserDetails{
 		this.password = password;
 	}
 
-	@Override
-	public String getUsername() {
-		// TODO Auto-generated method stub
-		return this.username;
-	}
-	
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	/* If you want account locking capabilities create variables and ways to set them for the methods below */
@@ -112,6 +120,13 @@ public class ApplicationUser implements UserDetails{
 	public boolean isEnabled() {
 		// TODO Auto-generated method stub
 		return true;
+	}
+
+
+	@Override
+	public String getUsername() {
+		// TODO Auto-generated method stub
+		return this.username;
 	}
     
 }

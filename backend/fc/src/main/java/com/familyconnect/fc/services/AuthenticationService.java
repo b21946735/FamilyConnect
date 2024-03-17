@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -11,6 +12,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.familyconnect.fc.models.ApplicationUser;
 import com.familyconnect.fc.models.LoginResponseDTO;
@@ -37,7 +39,7 @@ public class AuthenticationService {
     @Autowired
     private TokenService tokenService;
 
-    public ApplicationUser registerUser(String username, String password){
+    public ApplicationUser registerUser(String username,String name, String password){
 
         String encodedPassword = passwordEncoder.encode(password);
         Role userRole = roleRepository.findByAuthority("USER").get();
@@ -46,7 +48,20 @@ public class AuthenticationService {
 
         authorities.add(userRole);
 
-        return userRepository.save(new ApplicationUser(0, username, encodedPassword, authorities));
+        
+
+        if(userRepository.findByUsername(username).isPresent()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists");
+        }
+
+        if(username == null || username.isEmpty() || password == null || password.isEmpty() || name == null || name.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username, password and name cannot be empty");
+        }
+
+
+        System.out.println("User registered: " + username + " " + name ) ;
+
+        return userRepository.save(new ApplicationUser( username, name, encodedPassword, authorities));
     }
 
     public LoginResponseDTO loginUser(String username, String password){
