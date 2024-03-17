@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/user")
 @CrossOrigin("*")
-public class UserController {
+public class ChildController {
 
     @GetMapping("/")
-    public String helloUserController(){
-        return "User access level";
+    public String helloChildController(){
+        return "Child access level";
     }
     
 }

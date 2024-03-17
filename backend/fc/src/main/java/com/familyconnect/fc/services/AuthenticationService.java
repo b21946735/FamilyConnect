@@ -39,10 +39,10 @@ public class AuthenticationService {
     @Autowired
     private TokenService tokenService;
 
-    public ApplicationUser registerUser(String username,String name, String password){
+    public ApplicationUser registerUser(String username,String name, String password, String role){
 
         String encodedPassword = passwordEncoder.encode(password);
-        Role userRole = roleRepository.findByAuthority("USER").get();
+        Role userRole = roleRepository.findByAuthority(role).get();
 
         Set<Role> authorities = new HashSet<>();
 
@@ -59,7 +59,7 @@ public class AuthenticationService {
         }
 
 
-        System.out.println("User registered: " + username + " " + name ) ;
+        System.out.println("User registered: " + username + " " + name +  " " + role);
 
         return userRepository.save(new ApplicationUser( username, name, encodedPassword, authorities));
     }

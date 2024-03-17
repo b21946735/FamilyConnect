@@ -25,7 +25,9 @@ public class FcApplication {
 		return args ->{
 			if(roleRepository.findByAuthority("ADMIN").isPresent()) return;
 			Role adminRole = roleRepository.save(new Role("ADMIN"));
-			Role userRole = roleRepository.save(new Role("USER"));
+			Role parentRole = roleRepository.save(new Role("PARENT"));
+			Role childRole = roleRepository.save(new Role("CHILD"));
+
 
 			Set<Role> roles = new HashSet<>();
 			roles.add(adminRole);
@@ -34,16 +36,18 @@ public class FcApplication {
 
 			userRepository.save(admin);
 
-			initUsers(roleRepository, userRepository, passwordEncode,userRole);
+			initParents(roleRepository, userRepository, passwordEncode,parentRole);
+			initChildren(roleRepository, userRepository, passwordEncode,childRole);
+
 		};
 	}
 
 
-	private void initUsers(RoleRepository roleRepository, UserRepository userRepository, PasswordEncoder passwordEncoder ,Role userRole) {
+	private void initParents(RoleRepository roleRepository, UserRepository userRepository, PasswordEncoder passwordEncoder ,Role parentRole) {
 
 
 		Set<Role> roles = new HashSet<>();
-		roles.add(userRole);
+		roles.add(parentRole);
 
 		String[] names = {"halil", "hasan", "sulo","ibo"};
 		String[] mails = {"tokibokit@gmail.com", "hasan@gmail.com", "slymnyilmaz67@gmail.com","ibo@gmail.com"};
@@ -54,4 +58,24 @@ public class FcApplication {
 		}
 
 	}
+
+	private void initChildren(RoleRepository roleRepository, UserRepository userRepository, PasswordEncoder passwordEncoder ,Role childRole) {
+
+		Set<Role> roles = new HashSet<>();
+		roles.add(childRole);
+
+		String[] names = {"cocuk1", "cocuk2", "cocuk3","cocuk4"};
+		String[] mails = {"cocuk1@gmail.com" , "cocuk2@gmail.com","cocuk3@gmail.com" ,"cocuk4@gmail.com"};
+
+		for(int i = 0; i < names.length; i++){
+			ApplicationUser user = new ApplicationUser(mails[i], names[i], passwordEncoder.encode("123"), roles);
+			userRepository.save(user);
+		}
+
+	}
+
+	
+
+
+
 }
