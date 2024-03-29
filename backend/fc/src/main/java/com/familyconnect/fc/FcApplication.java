@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.familyconnect.fc.models.ApplicationUser;
 import com.familyconnect.fc.models.Role;
+import com.familyconnect.fc.repository.FamilyRepository;
 import com.familyconnect.fc.repository.RoleRepository;
 import com.familyconnect.fc.repository.UserRepository;
 
@@ -21,7 +22,7 @@ public class FcApplication {
 	}
 
 	@Bean
-	CommandLineRunner run(RoleRepository roleRepository, UserRepository userRepository, PasswordEncoder passwordEncode){
+	CommandLineRunner run(FamilyRepository familyRepository, RoleRepository roleRepository, UserRepository userRepository, PasswordEncoder passwordEncode){
 		return args ->{
 			if(roleRepository.findByAuthority("ADMIN").isPresent()) return;
 			Role adminRole = roleRepository.save(new Role("ADMIN"));
