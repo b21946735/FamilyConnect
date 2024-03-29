@@ -2,6 +2,9 @@ package com.familyconnect.fc.models;
 
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,11 +19,12 @@ public class Family {
     private Integer id;
     
     private String familyName;
-      
-
-    public Family(String familyName) {
+    private List<String> familyMembers = new ArrayList<String>();
+  
+    public Family(String familyName, String creatorUserName) {
 		super();
 		this.familyName = familyName;
+        this.familyMembers.add(creatorUserName);
 	}
 
     // Getter ve Setter metotları

@@ -32,6 +32,7 @@ public class ApplicationUser implements UserDetails{
 	@Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}",flags = Pattern.Flag.CASE_INSENSITIVE)
     private String username;
     private String password;
+    private Integer familyId = -1;
 
 	private String name;
 
@@ -67,6 +68,14 @@ public class ApplicationUser implements UserDetails{
 	
 	public void setAuthorities(Set<Role> authorities) {
 		this.authorities = authorities;
+	}
+
+	public void setFamilyId(Integer familyId) {
+		this.familyId = familyId;
+	}
+	
+	public Integer getFamilyId() {
+		return this.familyId;
 	}
 
 	@Override
