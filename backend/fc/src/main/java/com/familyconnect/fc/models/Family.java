@@ -27,6 +27,10 @@ public class Family {
         this.familyMembers.add(creatorUserName);
 	}
 
+    public Family() {
+        super();
+    }
+
     // Getter ve Setter metotları
     public Integer getId() {
         return id;

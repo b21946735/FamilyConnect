@@ -10,5 +10,5 @@ import com.familyconnect.fc.models.Family;
 
 @Repository
 public interface FamilyRepository extends JpaRepository<Family, Integer>{
-    Optional<Family> findById(Integer id);
+    Optional<Family> findById(Long id);
 }
