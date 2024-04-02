@@ -1,6 +1,10 @@
 package com.familyconnect.fc.services;
 
+import java.util.ArrayList;
+
 import javax.print.DocFlavor.STRING;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -66,4 +70,30 @@ public class FamilyService {
         System.out.println("Family found: " + family.getFamilyName());
         return family;
     }
+
+    public Family addFamilyMembers(Integer familyId, List<String> userNames) {
+        Optional<Family> familyOpt = familyRepository.findById(familyId);
+        if (!familyOpt.isPresent()) {
+            System.out.println("Family not found with ID: " + familyId);
+            return null;
+        }
+
+        Family family = familyOpt.get();
+        List<ApplicationUser> usersToAdd = new ArrayList<>();
+
+        for (String userName : userNames) {
+            Optional<ApplicationUser> userOpt = userRepository.findByUsername(userName);
+            if (!userOpt.isPresent() || (userOpt.get().getFamilyId() != null && userOpt.get().getFamilyId() != -1)) {
+                System.out.println("User not found or already belongs to a family: " + userName);
+                return null; 
+            }
+            ApplicationUser user = userOpt.get();
+            user.setFamilyId(familyId);
+            usersToAdd.add(user);
+        }
+        
+        userRepository.saveAll(usersToAdd);
+        return family;
+    }
+
 }

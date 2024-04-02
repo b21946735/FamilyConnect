@@ -1,6 +1,6 @@
 package com.familyconnect.fc.controllers;
 
-import org.hibernate.mapping.List;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
@@ -38,12 +38,12 @@ public class FamilyController {
         return ResponseEntity.ok(family);
     }
 
-    // @PostMapping
-    // public ResponseEntity addFamilyMember(@Param("familyId") Integer familyId, @Param("userName") String userName){
-    //     Family family = familyService.AddFamilyMember(familyId, userName);
-    //     if(family == null){
-    //         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not found or already belongs to a family");
-    //     }
-    //     return ResponseEntity.ok(family);
-    // }
+    @PostMapping("/addFamilyMember")
+    public ResponseEntity addFamilyMembers(@RequestParam("familyId") Integer familyId, @RequestBody List<String> userNames){
+        Family family = familyService.addFamilyMembers(familyId, userNames);
+        if(family == null){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not found or already belongs to a family");
+        }
+        return ResponseEntity.ok(family);
+    }
 }
