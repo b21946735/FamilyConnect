@@ -37,4 +37,13 @@ public class FamilyController {
         }
         return ResponseEntity.ok(family);
     }
+
+    // @PostMapping
+    // public ResponseEntity addFamilyMember(@Param("familyId") Integer familyId, @Param("userName") String userName){
+    //     Family family = familyService.AddFamilyMember(familyId, userName);
+    //     if(family == null){
+    //         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not found or already belongs to a family");
+    //     }
+    //     return ResponseEntity.ok(family);
+    // }
 }
