@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.familyconnect.fc.models.ApplicationUser;
+import com.familyconnect.fc.models.CreateTaskDTO;
 import com.familyconnect.fc.models.Family;
 import com.familyconnect.fc.models.FamilyRequestDTO;
 import com.familyconnect.fc.repository.FamilyRepository;
@@ -71,7 +72,7 @@ public class FamilyService {
         return family;
     }
 
-    public Family addFamilyMembers(Integer familyId, List<String> userNames) {
+    public Family addFamilyMembers(int familyId, List<String> userNames) {
         Optional<Family> familyOpt = familyRepository.findById(familyId);
         if (!familyOpt.isPresent()) {
             System.out.println("Family not found with ID: " + familyId);
@@ -96,4 +97,32 @@ public class FamilyService {
         return family;
     }
 
-}
+
+    // ********* Task **********
+
+    public String addTask(CreateTaskDTO task) {
+        // Optional<Family> familyOpt = familyRepository.findById(task.getFamilyId());
+        // if (!familyOpt.isPresent()) {
+        //     System.out.println("Family not found with ID: " + task.getFamilyId());
+        //     return null;
+        // }
+
+        // Family family = familyOpt.get();
+
+        // if (!family.getFamilyMembers().contains(task.getTaskCreatorUserName())) {
+        //     System.out.println("User is not a member of the family");
+        //     return null;
+        // }
+
+        // family.getTasks().add(task.toTask(family));
+
+        // familyRepository.save(family);
+
+        // System.out.println("Task added successfully");
+
+        return "Task added successfully";
+
+    }
+        
+
+} 

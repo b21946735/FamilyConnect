@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.familyconnect.fc.models.CreateTaskDTO;
 import com.familyconnect.fc.models.Family;
 import com.familyconnect.fc.models.FamilyRequestDTO;
 import com.familyconnect.fc.services.FamilyService;
@@ -45,5 +46,15 @@ public class FamilyController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not found or already belongs to a family");
         }
         return ResponseEntity.ok(family);
+    }
+
+    @PostMapping("/task/addTask")
+    public ResponseEntity addTask(@RequestBody CreateTaskDTO task){
+        // add task to family then return success message or error message
+        String family = familyService.addTask(task);
+        if(family == null){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Task could not be added");
+        }
+        return ResponseEntity.ok().body("Task added successfully");
     }
 }
