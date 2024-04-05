@@ -9,11 +9,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.familyconnect.fc.models.ApplicationUser;
-import com.familyconnect.fc.models.Role;
-import com.familyconnect.fc.repository.FamilyRepository;
-import com.familyconnect.fc.repository.RoleRepository;
-import com.familyconnect.fc.repository.UserRepository;
+import com.familyconnect.fc.authentication.Role;
+import com.familyconnect.fc.authentication.RoleRepository;
+import com.familyconnect.fc.family.FamilyRepository;
+import com.familyconnect.fc.user.ApplicationUser;
+import com.familyconnect.fc.user.UserRepository;
 
 @SpringBootApplication
 public class FcApplication {
