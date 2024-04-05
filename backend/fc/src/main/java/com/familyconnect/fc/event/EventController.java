@@ -28,17 +28,14 @@ public class EventController {
         return ResponseEntity.ok().body(events);
     }
 
-    @DeleteMapping("/{eventId}")
-    public Map<String, Boolean> deleteEvent(@PathVariable(value = "eventId") Integer eventId) {
+    @DeleteMapping("/delete/{eventId}")
+    public ResponseEntity<String> deleteEvent(@PathVariable(value = "eventId") Integer eventId) {
         eventService.deleteEventById(eventId);
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("deleted", Boolean.TRUE);
-        return response;
+        return ResponseEntity.ok("Event with ID " + eventId + " deleted successfully.");
     }
 
     @PutMapping("/{eventId}")
-    public ResponseEntity<Event> updateEvent(@PathVariable(value = "eventId") Integer eventId,
-                                             @RequestBody Event eventDetails) {
+    public ResponseEntity<Event> updateEvent(@PathVariable(value = "eventId") Integer eventId, @RequestBody Event eventDetails) {
         Event updatedEvent = eventService.updateEvent(eventId, eventDetails);
         return ResponseEntity.ok(updatedEvent);
     }
