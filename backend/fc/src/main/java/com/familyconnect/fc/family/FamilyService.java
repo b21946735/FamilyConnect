@@ -37,6 +37,8 @@ public class FamilyService {
                 System.out.println("User already belongs to a family");
                 return null;
             }
+            
+
             familyRepository.save(myFamily);
             
             Integer familyId = myFamily.getId();
