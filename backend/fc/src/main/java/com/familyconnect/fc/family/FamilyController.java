@@ -31,7 +31,7 @@ public class FamilyController {
         Family family = familyService.GetFamily(userName);
         if(family == null){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not found or does not belong to a family");
-        }
+        }   
         return ResponseEntity.ok(family);
     }
 
