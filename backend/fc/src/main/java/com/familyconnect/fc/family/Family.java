@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.familyconnect.fc.task.Task;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -26,6 +27,7 @@ public class Family {
     private List<String> familyMembers = new ArrayList<String>();
     private String creatorUserName;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "family", cascade = CascadeType.ALL)
     private List<Task> tasks = new ArrayList<>();
 
@@ -83,6 +85,7 @@ public class Family {
     }
 
     public void addTask(Task task) {
+        System.out.println("Task added to family " + this.familyName + " tasks size from " + this.tasks.size() + " to " + (this.tasks.size() + 1));
         this.tasks.add(task);
     }
 

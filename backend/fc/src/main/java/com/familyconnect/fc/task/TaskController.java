@@ -32,4 +32,13 @@ public class TaskController {
         }
         return ResponseEntity.ok().body(tasks);
     }
+
+    @PostMapping("/completeTask/{taskId}")
+    public ResponseEntity completeTask(@PathVariable Integer taskId){
+        Task task = taskService.completeTask(taskId);
+        if(task == null){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Task could not be completed or not exist");
+        }
+        return ResponseEntity.ok().body("Task completed successfully");
+    }
 }

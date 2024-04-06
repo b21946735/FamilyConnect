@@ -46,7 +46,7 @@ public class ProgressService {
     public Progress updateProgress(Integer progressId, Progress progressDetails) {
         Optional<Progress> optionalProgress = progressRepository.findById(progressId);
         if (!optionalProgress.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found for this id :: " + progressId);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Progress not found for this id :: " + progressId);
         }
         Progress existingProgress = optionalProgress.get();
         existingProgress.setProgressName(progressDetails.getProgressName());

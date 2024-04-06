@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.familyconnect.fc.authentication.Role;
+import com.familyconnect.fc.utils.Enums.UserRole;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -93,6 +94,15 @@ public class ApplicationUser implements UserDetails{
 	public String getPassword() {
 		// TODO Auto-generated method stub
 		return this.password;
+	}
+
+	public boolean isChild() {
+		for(Role role : authorities) {
+			if(role.getAuthority().equals(UserRole.CHILD.name())) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public void setPassword(String password) {

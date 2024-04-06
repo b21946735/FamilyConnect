@@ -1,5 +1,7 @@
 package com.familyconnect.fc.progress;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 
 public class ProgressCreateDTO {
@@ -46,8 +48,9 @@ public class ProgressCreateDTO {
         return currentStatus;
     }
 
-    public Date getDueDate() {
-        return dueDate;
+    public OffsetDateTime getDueDate() {
+        // convert Date to OffsetDateTime
+        return OffsetDateTime.ofInstant(dueDate.toInstant(), ZoneOffset.UTC);
     }
 
     public String getCreatedBy() {

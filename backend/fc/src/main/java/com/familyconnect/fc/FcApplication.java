@@ -1,5 +1,6 @@
 package com.familyconnect.fc;
 
+import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,7 +17,7 @@ import com.familyconnect.fc.authentication.RoleRepository;
 import com.familyconnect.fc.family.FamilyRepository;
 import com.familyconnect.fc.user.ApplicationUser;
 import com.familyconnect.fc.user.UserRepository;
-import com.familyconnect.fc.utils.RoleEnum.UserRole;
+import com.familyconnect.fc.utils.Enums.UserRole;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -47,7 +48,8 @@ public class FcApplication {
 
 			initParents(roleRepository, userRepository, passwordEncode,parentRole);
 			initChildren(roleRepository, userRepository, passwordEncode,childRole);
-
+			
+			
 		};
 	}
 

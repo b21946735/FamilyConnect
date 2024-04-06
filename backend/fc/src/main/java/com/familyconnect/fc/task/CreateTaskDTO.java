@@ -1,5 +1,8 @@
 package com.familyconnect.fc.task;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.Date;
 
 public class CreateTaskDTO {
     private String taskName;
@@ -7,11 +10,12 @@ public class CreateTaskDTO {
     private String taskCreatorUserName;
     
     private String taskAssigneeUserName;
-    private String taskDueDate; // format: yyyy-MM-dd
+    private Date taskDueDate; // format: yyyy-MM-dd
 
     private int taskRewardPoints;
+    private int taskId;
 
-    public CreateTaskDTO(String taskName, String taskDescription, String taskCreatorUserName, String taskAssigneeUserName, String taskDueDate, int taskRewardPoints) {
+    public CreateTaskDTO(String taskName, String taskDescription, String taskCreatorUserName, String taskAssigneeUserName, Date taskDueDate, int taskRewardPoints, int taskId) {
         super();
         this.taskName = taskName;
         this.taskDescription = taskDescription;
@@ -19,6 +23,18 @@ public class CreateTaskDTO {
         this.taskAssigneeUserName = taskAssigneeUserName;
         this.taskDueDate = taskDueDate;
         this.taskRewardPoints = taskRewardPoints;
+        this.taskId = taskId;
+    }
+
+    public CreateTaskDTO(Task task) {
+        super();
+        this.taskName = task.getTaskName();
+        this.taskDescription = task.getTaskDescription();
+        this.taskCreatorUserName = task.getTaskCreatorUserName();
+        this.taskAssigneeUserName = task.getTaskAssigneeUserName();
+        this.taskDueDate = Date.from(task.getTaskDueDate().toInstant());
+        this.taskRewardPoints = task.getTaskRewardPoints();
+        this.taskId = task.getId();
     }
 
     public CreateTaskDTO() {
@@ -58,11 +74,13 @@ public class CreateTaskDTO {
         this.taskAssigneeUserName = taskAssigneeUserName;
     }
 
-    public String getTaskDueDate() {
-        return taskDueDate;
+    public OffsetDateTime getTaskDueDate() {
+        // convert string to OffsetDateTime
+        
+        return OffsetDateTime.ofInstant(taskDueDate.toInstant(), ZoneOffset.UTC);
     }
 
-    public void setTaskDueDate(String taskDueDate) {
+    public void setTaskDueDate(Date taskDueDate) {
         this.taskDueDate = taskDueDate;
     }
 
@@ -74,6 +92,13 @@ public class CreateTaskDTO {
         this.taskRewardPoints = taskRewardPoints;
     }
 
+    public int getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(int taskId) {
+        this.taskId = taskId;
+    }
  
 
 }

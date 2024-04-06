@@ -2,7 +2,7 @@ package com.familyconnect.fc.authentication;
 
 import org.springframework.security.core.GrantedAuthority;
 
-import com.familyconnect.fc.utils.RoleEnum.UserRole;
+import com.familyconnect.fc.utils.Enums.UserRole;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

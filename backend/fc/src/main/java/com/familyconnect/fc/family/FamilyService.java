@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.familyconnect.fc.user.ApplicationUser;
 import com.familyconnect.fc.user.UserRepository;
+import com.familyconnect.fc.utils.Enums.UserRole;
 import com.familyconnect.fc.family.FamilyRequestDTO;
 
 
@@ -35,6 +36,11 @@ public class FamilyService {
             ApplicationUser user = userRepository.findByUsername(creatorName).get();
             if(user.getFamilyId() != null && user.getFamilyId() != -1){
                 System.out.println("User already belongs to a family");
+                return null;
+            }
+
+            if(user.isChild()){
+                System.out.println("User is a child and cannot create a family");
                 return null;
             }
             

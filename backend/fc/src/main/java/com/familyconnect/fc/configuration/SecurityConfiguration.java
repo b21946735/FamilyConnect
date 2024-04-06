@@ -26,6 +26,7 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import com.familyconnect.fc.utils.RSAKeyProperties;
+import com.familyconnect.fc.utils.Enums.UserRole;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -72,9 +73,9 @@ public class SecurityConfiguration {
             .authorizeHttpRequests(auth -> {
                 auth.requestMatchers(AUTH_WHITELIST).permitAll();
                 auth.requestMatchers("/auth/**").permitAll();
-                auth.requestMatchers("/admin/**").hasRole("ADMIN");
-                auth.requestMatchers("/parent/**").hasAnyRole("ADMIN", "PARENT");
-                auth.requestMatchers("/child/**").hasAnyRole("ADMIN", "CHILD");
+                auth.requestMatchers("/admin/**").hasRole(UserRole.ADMIN.name());
+                auth.requestMatchers("/parent/**").hasAnyRole(UserRole.ADMIN.name(), UserRole.PARENT.name());
+                auth.requestMatchers("/child/**").hasAnyRole(UserRole.ADMIN.name(), UserRole.PARENT.name(), UserRole.CHILD.name()); 
                 auth.anyRequest().authenticated();
             });
             

@@ -1,9 +1,14 @@
 package com.familyconnect.fc.task;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 import com.familyconnect.fc.family.Family;
+import com.familyconnect.fc.utils.Enums.TaskStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,15 +28,18 @@ public class Task {
     private String taskDescription;
     private String taskCreatorUserName;
     private String taskAssigneeUserName;
-    private String taskStartDate; // format: yyyy-MM-dd
-    private String taskDueDate; // format: yyyy-MM-dd
+    private OffsetDateTime taskStartDate; // format: yyyy-MM-dd
+    private OffsetDateTime taskDueDate; // format: yyyy-MM-dd
     private int taskRewardPoints;
 
+    private TaskStatus taskStatus = TaskStatus.IN_PROGRESS;
+
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "family_id")
     private Family family;
 
-    public Task(String taskName, String taskDescription, String taskCreatorUserName, String taskAssigneeUserName, String taskDueDate, int taskRewardPoints, Family family) {
+    public Task(String taskName, String taskDescription, String taskCreatorUserName, String taskAssigneeUserName, OffsetDateTime taskDueDate, int taskRewardPoints, Family family) {
         super();
         this.taskName = taskName;
         this.taskDescription = taskDescription;
@@ -40,7 +48,7 @@ public class Task {
         this.taskDueDate = taskDueDate;
         this.taskRewardPoints = taskRewardPoints;
         this.family = family;
-        this.taskStartDate = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDate.now()); 
+        this.taskStartDate = OffsetDateTime.now();
     }
 
     public Task(CreateTaskDTO createTaskDTO, Family family) {
@@ -52,7 +60,7 @@ public class Task {
         this.taskDueDate = createTaskDTO.getTaskDueDate();
         this.taskRewardPoints = createTaskDTO.getTaskRewardPoints();
         this.family = family;
-        this.taskStartDate = DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDate.now());
+        this.taskStartDate = OffsetDateTime.now();
     }
 
     public Task() {
@@ -103,11 +111,11 @@ public class Task {
         this.taskAssigneeUserName = taskAssigneeUserName;
     }
 
-    public String getTaskDueDate() {
+    public OffsetDateTime getTaskDueDate() {
         return taskDueDate;
     }
 
-    public void setTaskDueDate(String taskDueDate) {
+    public void setTaskDueDate(OffsetDateTime taskDueDate) {
         this.taskDueDate = taskDueDate;
     }
 
@@ -127,5 +135,20 @@ public class Task {
         this.family = family;
     }
 
+    public OffsetDateTime getTaskStartDate() {
+        return taskStartDate;
+    }
+
+    public void setTaskStartDate(OffsetDateTime taskStartDate) {
+        this.taskStartDate = taskStartDate;
+    }
+
+    public TaskStatus getTaskStatus() {
+        return taskStatus;
+    }
+
+    public void setTaskStatus(TaskStatus taskStatus) {
+        this.taskStatus = taskStatus;
+    }
 
 }

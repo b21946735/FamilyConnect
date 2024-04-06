@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+
+import java.time.OffsetDateTime;
 import java.util.Date;
 
 @Entity
@@ -15,7 +17,7 @@ public class Progress {
     private String progressName;
     private int quota;
     private int currentStatus; // Anlık durum
-    private Date dueDate;
+    private OffsetDateTime dueDate;
     private String createdBy;
     private String assignedTo;
 
@@ -23,7 +25,7 @@ public class Progress {
         super();
     }
 
-    public Progress(String progressName, int quota, int currentStatus, Date dueDate, String createdBy, String assignedTo) {
+    public Progress(String progressName, int quota, int currentStatus, OffsetDateTime dueDate, String createdBy, String assignedTo) {
         this.progressName = progressName;
         this.quota = quota;
         this.currentStatus = currentStatus;
@@ -66,11 +68,11 @@ public class Progress {
         this.currentStatus = currentStatus;
     }
 
-    public Date getDueDate() {
+    public OffsetDateTime getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(Date dueDate) {
+    public void setDueDate(OffsetDateTime dueDate) {
         this.dueDate = dueDate;
     }
 
