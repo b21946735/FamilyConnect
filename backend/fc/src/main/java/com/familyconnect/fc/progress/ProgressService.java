@@ -39,8 +39,8 @@ public class ProgressService {
         return progressRepository.findAll();
     }
 
-    public List<Progress> getProgressByUserId(String userId) {
-        return progressRepository.findByAssignedTo(userId);
+    public List<Progress> getProgressByUserName(String userName) {
+        return progressRepository.findByAssignedTo(userName);
     }
 
     public Progress updateProgress(Integer progressId, Progress progressDetails) {

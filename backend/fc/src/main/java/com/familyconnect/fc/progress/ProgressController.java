@@ -36,9 +36,9 @@ public class ProgressController {
         return ResponseEntity.ok(allProgress);
     }
 
-    @GetMapping("/getByUserId/{userId}")
-    public ResponseEntity<List<Progress>> getProgressByUserId(@PathVariable String userId) {
-        List<Progress> userProgress = progressService.getProgressByUserId(userId);
+    @GetMapping("/getByUserId/{userName}")
+    public ResponseEntity<List<Progress>> getProgressByUserName(@PathVariable String userName) {
+        List<Progress> userProgress = progressService.getProgressByUserName(userName);
         if (userProgress.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
