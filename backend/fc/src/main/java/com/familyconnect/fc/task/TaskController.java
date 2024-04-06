@@ -23,4 +23,13 @@ public class TaskController {
         }
         return ResponseEntity.ok().body("Task added successfully");
     }
+
+    @GetMapping("/getTasks/{username}")
+    public ResponseEntity getTasks(@PathVariable String username){
+        List<Task> tasks = taskService.getTasks(username);
+        if(tasks == null){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No tasks found");
+        }
+        return ResponseEntity.ok().body(tasks);
+    }
 }

@@ -54,11 +54,22 @@ public class TaskService {
         return newTask;
     }
         
-    public List<Task> getTasks(String username) {
+    public List<Task> getTasks(String username){
+        if(!userRepository.findByUsername(username).isPresent()){
+            return null;
+        }
+
         ApplicationUser user = userRepository.findByUsername(username).get();
         Family family = familyRepository.findById(user.getFamilyId()).get();
         List<Task> tasks = family.getTasks();
-        return tasks;
+
+        List<Task> userTasks = new ArrayList<Task>();
+        for(Task task : tasks){
+            if(task.getTaskAssigneeUserName().equals(username)){
+                userTasks.add(task);
+            }
+        }
+        return userTasks;
     }
 
 } 

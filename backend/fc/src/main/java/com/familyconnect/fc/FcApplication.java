@@ -16,6 +16,7 @@ import com.familyconnect.fc.authentication.RoleRepository;
 import com.familyconnect.fc.family.FamilyRepository;
 import com.familyconnect.fc.user.ApplicationUser;
 import com.familyconnect.fc.user.UserRepository;
+import com.familyconnect.fc.utils.RoleEnum.UserRole;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -31,10 +32,10 @@ public class FcApplication {
 	@Bean
 	CommandLineRunner run(FamilyRepository familyRepository, RoleRepository roleRepository, UserRepository userRepository, PasswordEncoder passwordEncode){
 		return args ->{
-			if(roleRepository.findByAuthority("ADMIN").isPresent()) return;
-			Role adminRole = roleRepository.save(new Role("ADMIN"));
-			Role parentRole = roleRepository.save(new Role("PARENT"));
-			Role childRole = roleRepository.save(new Role("CHILD"));
+			if(roleRepository.findByAuthority(UserRole.ADMIN.name()).isPresent()) return;
+			Role adminRole = roleRepository.save(new Role(UserRole.ADMIN));
+			Role parentRole = roleRepository.save(new Role(UserRole.PARENT));
+			Role childRole = roleRepository.save(new Role(UserRole.CHILD));
 
 
 			Set<Role> roles = new HashSet<>();

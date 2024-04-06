@@ -2,6 +2,8 @@ package com.familyconnect.fc.authentication;
 
 import org.springframework.security.core.GrantedAuthority;
 
+import com.familyconnect.fc.utils.RoleEnum.UserRole;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,23 +26,23 @@ public class Role implements GrantedAuthority {
         super();
     }
 
-    public Role(String authority){
-        this.authority = authority;
+    public Role(UserRole authority){
+        this.authority = authority.name();
     }
 
-    public Role(Integer roleId, String authority){
+    public Role(Integer roleId, UserRole authority){
         this.roleId = roleId;
-        this.authority = authority;
+        this.authority = authority.name();
     }
 
     @Override
     public String getAuthority() {
         // TODO Auto-generated method stub
-        return this.authority;
+        return authority.toString();
     }
 
-    public void setAuthority(String authority){
-        this.authority = authority;
+    public void setAuthority(UserRole authority){
+        this.authority = authority.name();
     }
 
     public Integer getRoleId(){
