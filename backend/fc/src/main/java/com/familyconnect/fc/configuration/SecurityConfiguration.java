@@ -34,6 +34,20 @@ public class SecurityConfiguration {
 
     private final RSAKeyProperties keys;
 
+    private static final String[] AUTH_WHITELIST = {
+        "/swagger-resources",
+        "/swagger-resources/**",
+        "/configuration/ui",
+        "/configuration/security",
+        "/swagger-ui.html",
+        "/webjars/**",
+        "/v3/api-docs/**",
+        "/api/public/**",
+        "/api/public/authenticate",
+        "/actuator/*",
+        "/swagger-ui/**"
+    };
+
     public SecurityConfiguration(RSAKeyProperties keys){
         this.keys = keys;
     }
@@ -56,6 +70,7 @@ public class SecurityConfiguration {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> {
+                auth.requestMatchers(AUTH_WHITELIST).permitAll();
                 auth.requestMatchers("/auth/**").permitAll();
                 auth.requestMatchers("/admin/**").hasRole("ADMIN");
                 auth.requestMatchers("/parent/**").hasAnyRole("ADMIN", "PARENT");

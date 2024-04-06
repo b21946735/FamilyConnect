@@ -3,10 +3,12 @@ package com.familyconnect.fc;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Description;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.familyconnect.fc.authentication.Role;
@@ -14,6 +16,11 @@ import com.familyconnect.fc.authentication.RoleRepository;
 import com.familyconnect.fc.family.FamilyRepository;
 import com.familyconnect.fc.user.ApplicationUser;
 import com.familyconnect.fc.user.UserRepository;
+
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
 
 @SpringBootApplication
 public class FcApplication {
