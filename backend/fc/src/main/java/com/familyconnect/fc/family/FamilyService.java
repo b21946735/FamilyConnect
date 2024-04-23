@@ -85,6 +85,7 @@ public class FamilyService {
 
         Family family = familyOpt.get();
         List<ApplicationUser> usersToAdd = new ArrayList<>();
+        List<String> familyMembers = family.getFamilyMembers();
 
         for (String userName : userNames) {
             Optional<ApplicationUser> userOpt = userRepository.findByUsername(userName);
@@ -95,8 +96,12 @@ public class FamilyService {
             ApplicationUser user = userOpt.get();
             user.setFamilyId(familyId);
             usersToAdd.add(user);
+            familyMembers.add(userName);
+
         }
+        family.setFamilyMembers(familyMembers);
         
+        familyRepository.save(family);
         userRepository.saveAll(usersToAdd);
         return family;
     }

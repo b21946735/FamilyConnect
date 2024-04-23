@@ -44,7 +44,13 @@ public class TaskService {
         System.out.println(task.getTaskCreatorUserName() + " task added");
         ApplicationUser taskCreator = userRepository.findByUsername(task.getTaskCreatorUserName()).get();
         ApplicationUser taskAssignee = userRepository.findByUsername(task.getTaskAssigneeUserName()).get();
-        Family family = familyRepository.findById(taskCreator.getFamilyId()).get();
+
+        Optional<Family> familyOptional = familyRepository.findById(taskCreator.getFamilyId());
+        if(!familyOptional.isPresent()){
+            return null;
+        }
+        Family family = familyOptional.get();
+       
         Task newTask = new Task(task, family);
         if(taskCreator == null || taskAssignee == null){
             return null;
@@ -62,8 +68,13 @@ public class TaskService {
             return null;
         }
         ApplicationUser user = userRepository.findByUsername(username).get();
-        Family family = familyRepository.findById(user.getFamilyId()).get();
-        List<Task> tasks = family.getTasks();
+        Optional <Family> familyOptional = familyRepository.findById(user.getFamilyId());
+        if(!familyOptional.isPresent()){
+            return null;
+        }
+        Family family = familyOptional.get();
+
+        List<Task> tasks = family.getTasks();   
         List<Task> userTasks = new ArrayList<Task>();
         System.out.println("tasks size: " + tasks.size());
         for(Task task : tasks){
@@ -99,6 +110,43 @@ public class TaskService {
 
 
         return completedTask;
+    }
+
+    public Task updateTask(Integer taskId, CreateTaskDTO task){
+        Optional<Task> taskToUpdate = taskRepository.findById(taskId);
+        if(!taskToUpdate.isPresent()){
+            return null;
+        }
+        Task updatedTask = taskToUpdate.get();
+        updatedTask.setTaskName(task.getTaskName());
+        updatedTask.setTaskDescription(task.getTaskDescription());
+        updatedTask.setTaskRewardPoints(task.getTaskRewardPoints());
+        updatedTask.setTaskDueDate(task.getTaskDueDate());
+        taskRepository.save(updatedTask);
+        return updatedTask;
+    }
+
+    public Task deleteTask(String userName, Integer taskId){
+        Optional<Task> taskToDelete = taskRepository.findById(taskId);
+        if(!taskToDelete.isPresent()){
+            return null;
+        }
+        Task deletedTask = taskToDelete.get();
+        //check if task belongs to the same family
+        ApplicationUser user = userRepository.findByUsername(userName).get();
+        Optional <Family> familyOptional = familyRepository.findById(user.getFamilyId());
+        if(!familyOptional.isPresent()){
+            return null;
+        }
+        Family family = familyOptional.get();
+        if(!family.getTasks().contains(deletedTask)){
+            return null;
+        }
+        family.getTasks().remove(deletedTask);
+        familyRepository.save(family);
+
+        taskRepository.delete(deletedTask);
+        return deletedTask;
     }
 
 } 

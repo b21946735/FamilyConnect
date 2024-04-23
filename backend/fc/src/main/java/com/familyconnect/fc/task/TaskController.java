@@ -41,4 +41,22 @@ public class TaskController {
         }
         return ResponseEntity.ok().body("Task completed successfully");
     }
+
+    @PutMapping("/updateTask/{taskId}")
+    public ResponseEntity updateTask(@PathVariable Integer taskId, @RequestBody CreateTaskDTO task){
+        Task updatedTask = taskService.updateTask(taskId, task);
+        if(updatedTask == null){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Task could not be updated or not exist");
+        }
+        return ResponseEntity.ok().body("Task updated successfully");
+    }
+
+    @DeleteMapping("/deleteTask/{userName}/{taskId}")
+    public ResponseEntity deleteTask(@PathVariable String userName, @PathVariable Integer taskId){
+        Task task = taskService.deleteTask(userName, taskId);
+        if(task == null){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Task could not be deleted or not exist");
+        }
+        return ResponseEntity.ok().body("Task deleted successfully");
+    }
 }

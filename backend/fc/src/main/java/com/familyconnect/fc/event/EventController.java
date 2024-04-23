@@ -34,10 +34,11 @@ public class EventController {
         return ResponseEntity.ok("Event with ID " + eventId + " deleted successfully.");
     }
 
-    @PutMapping("/{eventId}")
+    @PutMapping("/updateEvent/{eventId}")
     public ResponseEntity<Event> updateEvent(@PathVariable(value = "eventId") Integer eventId, @RequestBody Event eventDetails) {
         Event updatedEvent = eventService.updateEvent(eventId, eventDetails);
         return ResponseEntity.ok(updatedEvent);
     }
+
 }
 

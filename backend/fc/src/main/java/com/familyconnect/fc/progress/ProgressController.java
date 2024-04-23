@@ -30,23 +30,26 @@ public class ProgressController {
         }
     }
 
-    @GetMapping("/getAll")
-    public ResponseEntity<List<Progress>> getAllProgress() {
-        List<Progress> allProgress = progressService.getAllProgress();
+    @GetMapping("/getFamilyAll/{userName}")
+    public ResponseEntity<?> getAllProgress(@PathVariable String userName) {
+        List<Progress> allProgress = progressService.getAllProgress(userName);
+        if (allProgress != null&& allProgress.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found or no progress found.");
+        }
         return ResponseEntity.ok(allProgress);
     }
 
     @GetMapping("/getByUserId/{userName}")
-    public ResponseEntity<List<Progress>> getProgressByUserName(@PathVariable String userName) {
+    public ResponseEntity<?> getProgressByUserName(@PathVariable String userName) {
         List<Progress> userProgress = progressService.getProgressByUserName(userName);
         if (userProgress.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No progress found for user: " + userName);
         }
         return ResponseEntity.ok(userProgress);
     }
 
     @PutMapping("/update/{progressId}")
-    public ResponseEntity<?> updateProgress(@PathVariable Integer progressId, @RequestBody Progress progressDetails) {
+    public ResponseEntity<?> updateProgress(@PathVariable Integer progressId, @RequestBody ProgressCreateDTO progressDetails) {
         if (!progressService.existsById(progressId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Progress not found for id: " + progressId);
         }
