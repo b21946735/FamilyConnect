@@ -58,8 +58,6 @@ public class TaskService {
         family.addTask(newTask);
         familyRepository.save(family);
 
-        taskRepository.save(newTask);
-
         return newTask;
     }
         
