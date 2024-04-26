@@ -53,7 +53,8 @@ public class CalendarService {
 
             // get all tasks then add to calendar
             family.getTasks().forEach(task -> {
-                CalendarObjectDTO calendarObject = new CalendarObjectDTO(task.getTaskName(), task.getTaskDescription(),  task.getTaskDueDate(),"Task",task.getId());
+                CalendarObjectDTO calendarObject = new CalendarObjectDTO(task.getTaskName(), task.getTaskDescription(),  task.getTaskDueDate(),"Task",task.getId(),
+                    task.getPriority(), task.getTaskStartDate(), task.getTaskStatus());
                 calendar.add(calendarObject);
             });
 
@@ -63,7 +64,8 @@ public class CalendarService {
             events.forEach(event -> {
                 try {
                     CalendarObjectDTO calendarObject = new CalendarObjectDTO(event.getName(), event.getDescription(),
-                        OffsetDateTime.ofInstant(event.getEventDate().toInstant(), ZoneOffset.UTC) ,"Event",event.getId());
+                        OffsetDateTime.ofInstant(event.getEventDate().toInstant(), ZoneOffset.UTC) ,"Event",event.getId(),
+                        0, null, null);
                     calendar.add(calendarObject);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -72,7 +74,7 @@ public class CalendarService {
             });
 
             // sort calendar by date
-            calendar.sort((CalendarObjectDTO c1, CalendarObjectDTO c2) -> c1.getEventDate().compareTo(c2.getEventDate()));
+            calendar.sort((CalendarObjectDTO c1, CalendarObjectDTO c2) -> c1.getDueDate().compareTo(c2.getDueDate()));
 
         
             

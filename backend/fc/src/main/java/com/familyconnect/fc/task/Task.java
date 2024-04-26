@@ -31,6 +31,7 @@ public class Task {
     private OffsetDateTime taskStartDate; // format: yyyy-MM-dd
     private OffsetDateTime taskDueDate; // format: yyyy-MM-dd
     private int taskRewardPoints;
+    private int priority;
 
     private TaskStatus taskStatus = TaskStatus.IN_PROGRESS;
 
@@ -61,6 +62,7 @@ public class Task {
         this.taskRewardPoints = createTaskDTO.getTaskRewardPoints();
         this.family = family;
         this.taskStartDate = OffsetDateTime.now();
+        this.priority = createTaskDTO.getPriority();
     }
 
     public Task() {
@@ -149,6 +151,14 @@ public class Task {
 
     public void setTaskStatus(TaskStatus taskStatus) {
         this.taskStatus = taskStatus;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 
 }

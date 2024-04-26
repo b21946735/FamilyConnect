@@ -14,6 +14,7 @@ public class CreateTaskDTO {
 
     private int taskRewardPoints;
     private int taskId;
+    private int priority;
 
     public CreateTaskDTO(String taskName, String taskDescription, String taskCreatorUserName, String taskAssigneeUserName, Date taskDueDate, int taskRewardPoints, int taskId) {
         super();
@@ -24,6 +25,19 @@ public class CreateTaskDTO {
         this.taskDueDate = taskDueDate;
         this.taskRewardPoints = taskRewardPoints;
         this.taskId = taskId;
+        priority = 0;
+    }
+
+    public CreateTaskDTO(String taskName, String taskDescription, String taskCreatorUserName, String taskAssigneeUserName, Date taskDueDate, int taskRewardPoints, int taskId, int priority) {
+        super();
+        this.taskName = taskName;
+        this.taskDescription = taskDescription;
+        this.taskCreatorUserName = taskCreatorUserName;
+        this.taskAssigneeUserName = taskAssigneeUserName;
+        this.taskDueDate = taskDueDate;
+        this.taskRewardPoints = taskRewardPoints;
+        this.taskId = taskId;
+        this.priority = priority;
     }
 
     public CreateTaskDTO(Task task) {
@@ -40,6 +54,8 @@ public class CreateTaskDTO {
     public CreateTaskDTO() {
         super();
     }
+
+
 
     // Getter ve Setter metotları
     public String getTaskName() {
@@ -100,5 +116,11 @@ public class CreateTaskDTO {
         this.taskId = taskId;
     }
  
+    public int getPriority() {
+        return priority;
+    }
 
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
 }
