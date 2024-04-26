@@ -105,6 +105,68 @@ public class FamilyService {
         userRepository.saveAll(usersToAdd);
         return family;
     }
+
+    public Family updateFamilyName(String  username, String familyName) {
+        Optional<ApplicationUser> userOpt = userRepository.findByUsername(username);
+        if (!userOpt.isPresent()) {
+            System.out.println("User not found while updating family name");
+            return null;
+        }
+        ApplicationUser user = userOpt.get();
+        if(!user.isParent()){
+            System.out.println("User is not a parent and cannot update family name");
+            return null;
+        }
+
+        Integer familyId = user.getFamilyId();
+        if (familyId == null || familyId == -1) {
+            System.out.println("User does not belong to any family");
+            return null;
+        }
+        Optional<Family> familyOpt = familyRepository.findById(familyId);
+        if (!familyOpt.isPresent()) {
+            System.out.println("Family not found with ID: " + familyId);
+            return null;
+        }
+        
+        Family family = familyOpt.get();
+        family.setFamilyName(familyName);
+        familyRepository.save(family);
+        System.out.println("Family name updated successfully");
+        return family;
+    }
+
+    public List<FamilyMemberInfoDTO> getFamilyMembersInformation(String userName) {
+        if(!userRepository.findByUsername(userName).isPresent()){
+            System.out.println("User not found while getting family members information");
+            return null;
+        }
+        Integer familyId = userRepository.findByUsername(userName).get().getFamilyId();
+        if(familyId == null || familyId == -1){
+            System.out.println("User does not belong to any family");
+            return null;
+        }
+        Optional<Family> familyOpt = familyRepository.findById(familyId);
+        if (!familyOpt.isPresent()) {
+            System.out.println("Family not found with ID: " + familyId);
+            return null;
+        }
+        Family family = familyOpt.get();
+        List<String> familyMembers = family.getFamilyMembers();
+        List<FamilyMemberInfoDTO> familyMemberInfos = new ArrayList<>();
+        for (String memberName : familyMembers) {
+            Optional<ApplicationUser> userOpt = userRepository.findByUsername(memberName);
+            if (!userOpt.isPresent()) {
+                System.out.println("User not found while getting family members information");
+                return null;
+            }
+            ApplicationUser user = userOpt.get();
+            String role = user.isParent() ? UserRole.PARENT.toString() : UserRole.CHILD.toString();
+            FamilyMemberInfoDTO familyMemberInfo = new FamilyMemberInfoDTO(user.getUsername(), user.getName(), user.getProfilePictureId(),role);
+            familyMemberInfos.add(familyMemberInfo);
+        }
+        return familyMemberInfos;
+    }
         
 
 } 

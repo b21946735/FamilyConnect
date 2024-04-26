@@ -43,6 +43,8 @@ public class ApplicationUser implements UserDetails{
 
 	private String name;
 
+	private int profilePictureId;
+
     @ManyToMany(fetch=FetchType.EAGER)
     @JoinTable(
         name="user_role_junction",
@@ -153,5 +155,24 @@ public class ApplicationUser implements UserDetails{
 		// TODO Auto-generated method stub
 		return this.username;
 	}
+
+	public int getProfilePictureId() {
+		return this.profilePictureId;
+	}
+
+	public void setProfilePictureId(int profilePictureId) {
+		this.profilePictureId = profilePictureId;
+	}
+
+	// check if user is a parent
+	public boolean isParent() {
+		for(Role role : authorities) {
+			if(role.getAuthority().equals(UserRole.PARENT.name())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 
 }

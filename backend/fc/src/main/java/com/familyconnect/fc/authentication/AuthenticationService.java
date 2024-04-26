@@ -77,4 +77,15 @@ public class AuthenticationService {
         }
     }
 
+    // change password
+    public ApplicationUser changePassword(String username, String oldPassword, String newPassword){
+        ApplicationUser user = userRepository.findByUsername(username).get();
+        if(!passwordEncoder.matches(oldPassword, user.getPassword())){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Old password is incorrect");
+        }
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        return user;
+    }
+
 }
