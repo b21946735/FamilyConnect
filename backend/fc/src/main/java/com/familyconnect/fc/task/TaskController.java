@@ -33,13 +33,43 @@ public class TaskController {
         return ResponseEntity.ok().body(tasks);
     }
 
-    @PostMapping("/completeTask/{taskId}")
-    public ResponseEntity completeTask(@PathVariable Integer taskId){
-        Task task = taskService.completeTask(taskId);
+    @PostMapping("/completeTask/{username}/{taskId}")
+    public ResponseEntity completeTask(@PathVariable String username, @PathVariable Integer taskId){
+        Task task = taskService.completeTask(username,taskId);
         if(task == null){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Task could not be completed or not exist");
         }
         return ResponseEntity.ok().body("Task completed successfully");
+    }
+
+    // pending task
+    @PostMapping("/pendingTask/{username}/{taskId}")
+    public ResponseEntity pendingTask(@PathVariable String username, @PathVariable Integer taskId){
+        Task task = taskService.pendingTask(username,taskId);
+        if(task == null){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Task could not be pending or not exist");
+        }
+        return ResponseEntity.ok().body("Task pending successfully");
+    }
+
+    // reject task
+    @PostMapping("/rejectTask/{username}/{taskId}")
+    public ResponseEntity rejectTask(@PathVariable String username, @PathVariable Integer taskId){
+        Task task = taskService.rejectTask(username,taskId);
+        if(task == null){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Task could not be rejected or not exist");
+        }
+        return ResponseEntity.ok().body("Task rejected successfully");
+    }
+
+    // get pending tasks
+    @GetMapping("/getPendingTasks/{username}")
+    public ResponseEntity getPendingTasks(@PathVariable String username){
+        List<Task> tasks = taskService.getPendingTasks(username);
+        if(tasks == null){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No tasks found");
+        }
+        return ResponseEntity.ok().body(tasks);
     }
 
     @PutMapping("/updateTask/{taskId}")

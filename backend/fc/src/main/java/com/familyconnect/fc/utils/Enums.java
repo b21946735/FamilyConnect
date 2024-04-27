@@ -14,4 +14,3 @@ public class Enums {
         PENDING
     }
 }
-

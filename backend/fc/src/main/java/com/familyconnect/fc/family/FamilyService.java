@@ -1,5 +1,6 @@
 package com.familyconnect.fc.family;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -12,8 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.familyconnect.fc.user.ApplicationUser;
 import com.familyconnect.fc.user.UserRepository;
+import com.familyconnect.fc.utils.Enums.TaskStatus;
 import com.familyconnect.fc.utils.Enums.UserRole;
 import com.familyconnect.fc.family.FamilyRequestDTO;
+import com.familyconnect.fc.task.Task;
+import com.familyconnect.fc.task.TaskRepository;
 
 
 @Service
@@ -25,6 +29,9 @@ public class FamilyService {
 
     @Autowired
     private  UserRepository userRepository;
+
+    @Autowired
+    private TaskRepository taskRepository;
 
     public Family Createfamily(FamilyRequestDTO family) {
         Family myFamily = new Family(family.getFamilyName(), family.getFamilyCreatorUserName());
@@ -73,6 +80,8 @@ public class FamilyService {
         }
         Family family = familyRepository.findById(userFamilyId).get();
         System.out.println("Family found: " + family.getFamilyName());
+        // update task status
+        updateTaskStatus(family);
         return family;
     }
 
@@ -165,8 +174,22 @@ public class FamilyService {
             FamilyMemberInfoDTO familyMemberInfo = new FamilyMemberInfoDTO(user.getUsername(), user.getName(), user.getProfilePictureId(),role);
             familyMemberInfos.add(familyMemberInfo);
         }
+
+        updateTaskStatus(family);
         return familyMemberInfos;
     }
-        
+
+
+    // update task status check if due date is passed
+    public void updateTaskStatus(Family family){
+        List<Task> tasks = family.getTasks();
+        for(Task task : tasks){
+            if(task.getTaskStatus() == TaskStatus.IN_PROGRESS && task.getTaskDueDate().isBefore(OffsetDateTime.now())){
+                task.setTaskStatus(TaskStatus.FAILED);
+                taskRepository.save(task);
+            }
+        }
+    }
+
 
 } 

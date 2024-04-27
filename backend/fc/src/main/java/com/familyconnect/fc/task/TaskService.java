@@ -41,7 +41,9 @@ public class TaskService {
 
     public Task addTask(CreateTaskDTO task) {
         // add task to family then return success message or error message
-        System.out.println(task.getTaskCreatorUserName() + " task added");
+        if(task.getTaskDueDate().isBefore(OffsetDateTime.now())){
+            return null;
+        }
         ApplicationUser taskCreator = userRepository.findByUsername(task.getTaskCreatorUserName()).get();
         ApplicationUser taskAssignee = userRepository.findByUsername(task.getTaskAssigneeUserName()).get();
 
@@ -55,6 +57,11 @@ public class TaskService {
         if(taskCreator == null || taskAssignee == null){
             return null;
         }
+
+        // if due date is before request date return null
+        
+
+        System.out.println(task.getTaskCreatorUserName() + " task added");
         family.addTask(newTask);
         familyRepository.save(family);
 
@@ -74,23 +81,117 @@ public class TaskService {
 
         List<Task> tasks = family.getTasks();   
         List<Task> userTasks = new ArrayList<Task>();
-        System.out.println("tasks size: " + tasks.size());
         for(Task task : tasks){
-            System.out.println(task.getTaskAssigneeUserName());
             if(task.getTaskAssigneeUserName().equals(username)){
                 userTasks.add(task);
-                System.out.println(task.getTaskName());
             }
         }
         return userTasks;
     }
 
-    public Task completeTask(Integer taskId){
+    
+    public Task pendingTask(String username, Integer taskId){
+        Optional<Task> task = taskRepository.findById(taskId);
+        if(!task.isPresent()){
+            return null;
+        }
+        Task pendingTask = task.get();
+
+        if(pendingTask.getTaskStatus() != TaskStatus.IN_PROGRESS){
+            return null;
+        }
+
+        //check if task belongs to the same family
+        ApplicationUser user = userRepository.findByUsername(username).get();
+        Optional <Family> familyOptional = familyRepository.findById(user.getFamilyId());
+        if(!familyOptional.isPresent()){
+            return null;
+        }
+
+        Family family = familyOptional.get();
+
+        if(!family.getTasks().contains(pendingTask)){
+            return null;
+        }
+
+        pendingTask.setTaskStatus(TaskStatus.PENDING);
+
+        taskRepository.save(pendingTask);
+
+        return pendingTask;
+    }
+
+    // reject pending task
+    public Task rejectTask(String username, Integer taskId){
+        Optional<Task> task = taskRepository.findById(taskId);
+        if(!task.isPresent()){
+            return null;
+        }
+        Task rejectedTask = task.get();
+
+        if(rejectedTask.getTaskStatus() != TaskStatus.PENDING && rejectedTask.getTaskStatus() != TaskStatus.IN_PROGRESS){
+            return null;
+        }
+
+        //check if task belongs to the same family
+        ApplicationUser user = userRepository.findByUsername(username).get();
+        Optional <Family> familyOptional = familyRepository.findById(user.getFamilyId());
+        if(!familyOptional.isPresent()){
+            return null;
+        }
+
+        Family family = familyOptional.get();
+
+        if(!family.getTasks().contains(rejectedTask)){
+            return null;
+        }
+
+        // check if task time is not passed if it is passed set task status to failed else set it to in progress
+        OffsetDateTime now = OffsetDateTime.now();
+        if(rejectedTask.getTaskDueDate().isBefore(now)){
+            rejectedTask.setTaskStatus(TaskStatus.FAILED);
+        }
+        else{
+            rejectedTask.setTaskStatus(TaskStatus.IN_PROGRESS);
+        }
+
+
+        
+        taskRepository.save(rejectedTask);
+
+        return rejectedTask;
+    }
+
+
+    public Task completeTask(String username, Integer taskId){
         Optional<Task> task = taskRepository.findById(taskId);
         if(!task.isPresent()){
             return null;
         }
         Task completedTask = task.get();
+
+        //check if task belongs to the same family
+        ApplicationUser user = userRepository.findByUsername(username).get();
+        Optional <Family> familyOptional = familyRepository.findById(user.getFamilyId());
+        if(!familyOptional.isPresent()){
+            return null;
+        }
+        Family family = familyOptional.get();
+        if(!family.getTasks().contains(completedTask)){
+            return null;
+        }
+
+        // check if user is parent
+        if(!user.isParent()){
+            return null;
+        }
+
+        // check if task is in progress
+        if(completedTask.getTaskStatus() != TaskStatus.IN_PROGRESS){
+            return null;
+        }
+
+
         completedTask.setTaskStatus(TaskStatus.COMPLETED);
         taskRepository.save(completedTask);
         
@@ -145,6 +246,32 @@ public class TaskService {
 
         taskRepository.delete(deletedTask);
         return deletedTask;
+    }
+
+    public List<Task> getPendingTasks(String username) {
+        if(!userRepository.findByUsername(username).isPresent()){
+            return null;
+        }
+        ApplicationUser user = userRepository.findByUsername(username).get();
+
+        Optional <Family> familyOptional = familyRepository.findById(user.getFamilyId());
+        if(!familyOptional.isPresent()){
+            return null;
+        }
+
+        Family family = familyOptional.get();
+
+        List<Task> tasks = family.getTasks();
+
+        List<Task> pendingTasks = new ArrayList<Task>();
+
+        for(Task task : tasks){
+            if(task.getTaskStatus() == TaskStatus.PENDING){
+                pendingTasks.add(task);
+            }
+        }
+
+        return pendingTasks;
     }
 
 } 
