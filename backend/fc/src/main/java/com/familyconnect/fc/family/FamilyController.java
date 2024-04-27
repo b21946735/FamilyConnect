@@ -18,50 +18,41 @@ public class FamilyController {
 
     @PostMapping("/createFamily")
     public ResponseEntity createFamily(@RequestBody FamilyRequestDTO family) {
-        Family createdfamily = familyService.Createfamily(family);
-        if (createdfamily == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not found or already belongs to a family");
-        }
-        return ResponseEntity.ok(createdfamily);
+        ResponseEntity createdfamily = familyService.Createfamily(family);
+        return ResponseEntity.status(createdfamily.getStatusCode()).body(createdfamily.getBody());
     }
 
     
     @GetMapping("/getFamily")
     public ResponseEntity getFamily(@RequestParam String userName){
-        Family family = familyService.GetFamily(userName);
-        if(family == null){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not found or does not belong to a family");
-        }   
-        return ResponseEntity.ok(family);
+        ResponseEntity family = familyService.GetFamily(userName);
+        return ResponseEntity.status(family.getStatusCode()).body(family.getBody());
     }
 
     // get family member user infos
     @GetMapping("/getFamilyMembersInformation")
     public ResponseEntity getFamilyMembersInformation(@RequestParam String userName){
-        List<FamilyMemberInfoDTO> familyMembers = familyService.getFamilyMembersInformation(userName);
-        if(familyMembers == null){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Family not found");
-        }
-        return ResponseEntity.ok(familyMembers);
+        ResponseEntity familyMembers = familyService.getFamilyMembersInformation(userName);
+        return ResponseEntity.status(familyMembers.getStatusCode()).body(familyMembers.getBody());
     }
 
     @PostMapping("/addFamilyMember")
     public ResponseEntity addFamilyMembers(@RequestParam("familyId") Integer familyId, @RequestBody List<String> userNames){
-        Family family = familyService.addFamilyMembers(familyId, userNames);
-        if(family == null){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not found or already belongs to a family");
-        }
-        return ResponseEntity.ok(family);
+        ResponseEntity family = familyService.addFamilyMembers(familyId, userNames);
+        return ResponseEntity.status(family.getStatusCode()).body(family.getBody());
+    }
+
+    @DeleteMapping("/removeFamilyMember")
+    public ResponseEntity removeFamilyMember(@RequestParam("familyId") Integer familyId, @RequestParam("userName") String userName){
+        ResponseEntity family = familyService.removeFamilyMember(familyId, userName);
+        return ResponseEntity.status(family.getStatusCode()).body(family.getBody());
     }
 
     //change family name
     @PutMapping("/updateFamilyName")
     public ResponseEntity updateFamilyName(@RequestParam("username") String username, @RequestParam("familyName") String familyName){
-        Family family = familyService.updateFamilyName(username, familyName);
-        if(family == null){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Family not found");
-        }
-        return ResponseEntity.ok(family);
+        ResponseEntity family = familyService.updateFamilyName(username, familyName);
+        return ResponseEntity.status(family.getStatusCode()).body(family.getBody());
     }
 
 }

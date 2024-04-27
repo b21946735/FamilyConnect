@@ -19,30 +19,21 @@ public class ProfileController {
         // update profile name
         @PutMapping("/updateName/{username}/{name}")
         public ResponseEntity updateProfileName(@PathVariable String username, @PathVariable String name){
-            ApplicationUser updatedProfile = profileService.updateProfileName(username, name);
-            if(updatedProfile == null){
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Profile name could not be updated");
-            }
-            return ResponseEntity.ok().body("Profile name updated successfully");
+            ResponseEntity updatedProfile = profileService.updateProfileName(username, name);
+            return ResponseEntity.status(updatedProfile.getStatusCode()).body(updatedProfile.getBody());
         }
 
         // update profile password
         @PutMapping("/updatePassword/{username}/{oldPassword}/{password}")
         public ResponseEntity updateProfilePassword(@PathVariable String username,@PathVariable String oldPassword , @PathVariable String password){
-            ApplicationUser updatedProfile = profileService.updateProfilePassword(username,oldPassword, password);
-            if(updatedProfile == null){
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Profile password could not be updated");
-            }
-            return ResponseEntity.ok().body("Profile password updated successfully");
+            ResponseEntity updatedProfile = profileService.updateProfilePassword(username,oldPassword, password);
+            return ResponseEntity.status(updatedProfile.getStatusCode()).body(updatedProfile.getBody());
         }
 
         //update profile picture id
         @PutMapping("/updateProfilePicture/{username}/{profilePictureId}")
         public ResponseEntity updateProfilePicture(@PathVariable String username, @PathVariable int profilePictureId){
-            ApplicationUser updatedProfile = profileService.updateProfilePicture(username, profilePictureId);
-            if(updatedProfile == null){
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Profile picture could not be updated");
-            }
-            return ResponseEntity.ok().body("Profile picture updated successfully");
+            ResponseEntity updatedProfile = profileService.updateProfilePicture(username, profilePictureId);
+            return ResponseEntity.status(updatedProfile.getStatusCode()).body(updatedProfile.getBody());
         }
 }

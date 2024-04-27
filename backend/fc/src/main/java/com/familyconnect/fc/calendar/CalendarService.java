@@ -8,6 +8,8 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 import com.familyconnect.fc.event.Event;
 import com.familyconnect.fc.event.EventRepository;
 import com.familyconnect.fc.family.Family;
@@ -37,14 +39,14 @@ public class CalendarService {
         private EventRepository eventRepository;
 
 
-        public List<CalendarObjectDTO> getCalendar(String username){
+        public ResponseEntity getCalendar(String username){
             if(!userRepository.findByUsername(username).isPresent()){
-                return null;
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
             }
             ApplicationUser user = userRepository.findByUsername(username).get();
             Optional<Family> familyOptional = familyRepository.findById(user.getFamilyId());
             if(!familyOptional.isPresent()){
-                return null;
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Family not found");
             }
             Family family = familyOptional.get();
             
@@ -78,7 +80,7 @@ public class CalendarService {
 
         
             
-            return calendar;
+            return ResponseEntity.status(HttpStatus.OK).body(calendar);
 
         }
 

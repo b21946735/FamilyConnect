@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,23 +40,23 @@ public class TaskService {
     private ProgressService progressService;
 
 
-    public Task addTask(CreateTaskDTO task) {
+    public ResponseEntity addTask(CreateTaskDTO task) {
         // add task to family then return success message or error message
         if(task.getTaskDueDate().isBefore(OffsetDateTime.now())){
-            return null;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Due date cannot be before request date");
         }
         ApplicationUser taskCreator = userRepository.findByUsername(task.getTaskCreatorUserName()).get();
         ApplicationUser taskAssignee = userRepository.findByUsername(task.getTaskAssigneeUserName()).get();
 
         Optional<Family> familyOptional = familyRepository.findById(taskCreator.getFamilyId());
         if(!familyOptional.isPresent()){
-            return null;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Family not found");
         }
         Family family = familyOptional.get();
        
         Task newTask = new Task(task, family);
         if(taskCreator == null || taskAssignee == null){
-            return null;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
 
         // if due date is before request date return null
@@ -65,17 +66,17 @@ public class TaskService {
         family.addTask(newTask);
         familyRepository.save(family);
 
-        return newTask;
+        return ResponseEntity.status(HttpStatus.CREATED).body(newTask);
     }
         
-    public List<Task> getTasks(String username){
+    public ResponseEntity getTasks(String username){
         if(!userRepository.findByUsername(username).isPresent()){
-            return null;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
         ApplicationUser user = userRepository.findByUsername(username).get();
         Optional <Family> familyOptional = familyRepository.findById(user.getFamilyId());
         if(!familyOptional.isPresent()){
-            return null;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Family not found");
         }
         Family family = familyOptional.get();
 
@@ -86,64 +87,64 @@ public class TaskService {
                 userTasks.add(task);
             }
         }
-        return userTasks;
+        return ResponseEntity.status(HttpStatus.OK).body(userTasks);
     }
 
     
-    public Task pendingTask(String username, Integer taskId){
+    public ResponseEntity pendingTask(String username, Integer taskId){
         Optional<Task> task = taskRepository.findById(taskId);
         if(!task.isPresent()){
-            return null;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
         }
         Task pendingTask = task.get();
 
         if(pendingTask.getTaskStatus() != TaskStatus.IN_PROGRESS){
-            return null;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Task is not in progress");
         }
 
         //check if task belongs to the same family
         ApplicationUser user = userRepository.findByUsername(username).get();
         Optional <Family> familyOptional = familyRepository.findById(user.getFamilyId());
         if(!familyOptional.isPresent()){
-            return null;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Family not found");
         }
 
         Family family = familyOptional.get();
 
         if(!family.getTasks().contains(pendingTask)){
-            return null;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Task does not belong to the family");
         }
 
         pendingTask.setTaskStatus(TaskStatus.PENDING);
 
         taskRepository.save(pendingTask);
 
-        return pendingTask;
+        return ResponseEntity.status(HttpStatus.OK).body(pendingTask);
     }
 
     // reject pending task
-    public Task rejectTask(String username, Integer taskId){
+    public ResponseEntity rejectTask(String username, Integer taskId){
         Optional<Task> task = taskRepository.findById(taskId);
         if(!task.isPresent()){
-            return null;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
         }
         Task rejectedTask = task.get();
 
         if(rejectedTask.getTaskStatus() != TaskStatus.PENDING && rejectedTask.getTaskStatus() != TaskStatus.IN_PROGRESS){
-            return null;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Task is not pending or in progress");
         }
 
         //check if task belongs to the same family
         ApplicationUser user = userRepository.findByUsername(username).get();
         Optional <Family> familyOptional = familyRepository.findById(user.getFamilyId());
         if(!familyOptional.isPresent()){
-            return null;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Family not found");
         }
 
         Family family = familyOptional.get();
 
         if(!family.getTasks().contains(rejectedTask)){
-            return null;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Task does not belong to the family");    
         }
 
         // check if task time is not passed if it is passed set task status to failed else set it to in progress
@@ -159,14 +160,14 @@ public class TaskService {
         
         taskRepository.save(rejectedTask);
 
-        return rejectedTask;
+        return ResponseEntity.status(HttpStatus.OK).body(rejectedTask);
     }
 
 
-    public Task completeTask(String username, Integer taskId){
+    public ResponseEntity completeTask(String username, Integer taskId){
         Optional<Task> task = taskRepository.findById(taskId);
         if(!task.isPresent()){
-            return null;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
         }
         Task completedTask = task.get();
 
@@ -174,21 +175,21 @@ public class TaskService {
         ApplicationUser user = userRepository.findByUsername(username).get();
         Optional <Family> familyOptional = familyRepository.findById(user.getFamilyId());
         if(!familyOptional.isPresent()){
-            return null;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Family not found");
         }
         Family family = familyOptional.get();
         if(!family.getTasks().contains(completedTask)){
-            return null;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Task does not belong to the family");
         }
 
         // check if user is parent
         if(!user.isParent()){
-            return null;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User is not parent");
         }
 
         // check if task is in progress
         if(completedTask.getTaskStatus() != TaskStatus.IN_PROGRESS){
-            return null;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Task is not in progress");
         }
 
 
@@ -208,13 +209,13 @@ public class TaskService {
 
 
 
-        return completedTask;
+        return ResponseEntity.status(HttpStatus.OK).body(completedTask);
     }
 
-    public Task updateTask(Integer taskId, CreateTaskDTO task){
+    public ResponseEntity updateTask(Integer taskId, CreateTaskDTO task){
         Optional<Task> taskToUpdate = taskRepository.findById(taskId);
         if(!taskToUpdate.isPresent()){
-            return null;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
         }
         Task updatedTask = taskToUpdate.get();
         updatedTask.setTaskName(task.getTaskName());
@@ -222,41 +223,41 @@ public class TaskService {
         updatedTask.setTaskRewardPoints(task.getTaskRewardPoints());
         updatedTask.setTaskDueDate(task.getTaskDueDate());
         taskRepository.save(updatedTask);
-        return updatedTask;
+        return ResponseEntity.status(HttpStatus.OK).body(updatedTask);
     }
 
-    public Task deleteTask(String userName, Integer taskId){
+    public ResponseEntity deleteTask(String userName, Integer taskId){
         Optional<Task> taskToDelete = taskRepository.findById(taskId);
         if(!taskToDelete.isPresent()){
-            return null;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
         }
         Task deletedTask = taskToDelete.get();
         //check if task belongs to the same family
         ApplicationUser user = userRepository.findByUsername(userName).get();
         Optional <Family> familyOptional = familyRepository.findById(user.getFamilyId());
         if(!familyOptional.isPresent()){
-            return null;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Family not found");
         }
         Family family = familyOptional.get();
         if(!family.getTasks().contains(deletedTask)){
-            return null;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Task does not belong to the family");
         }
         family.getTasks().remove(deletedTask);
         familyRepository.save(family);
 
         taskRepository.delete(deletedTask);
-        return deletedTask;
+        return ResponseEntity.status(HttpStatus.OK).body("Task deleted successfully");
     }
 
-    public List<Task> getPendingTasks(String username) {
+    public ResponseEntity getPendingTasks(String username) {
         if(!userRepository.findByUsername(username).isPresent()){
-            return null;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
         ApplicationUser user = userRepository.findByUsername(username).get();
 
         Optional <Family> familyOptional = familyRepository.findById(user.getFamilyId());
         if(!familyOptional.isPresent()){
-            return null;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Family not found");
         }
 
         Family family = familyOptional.get();
@@ -271,7 +272,7 @@ public class TaskService {
             }
         }
 
-        return pendingTasks;
+        return ResponseEntity.status(HttpStatus.OK).body(pendingTasks);
     }
 
 } 

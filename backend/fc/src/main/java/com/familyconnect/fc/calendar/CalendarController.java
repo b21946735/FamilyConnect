@@ -18,10 +18,7 @@ public class CalendarController {
 
     @GetMapping("/getCalendar/{username}")
     public ResponseEntity getCalendar(@PathVariable String username){
-        List<CalendarObjectDTO> calendar = calendarService.getCalendar(username);
-        if(calendar == null){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No calendar record found");
-        }
-        return ResponseEntity.ok().body(calendar);
+        ResponseEntity calendar = calendarService.getCalendar(username);
+        return ResponseEntity.status(calendar.getStatusCode()).body(calendar.getBody());
     }
 }
