@@ -275,4 +275,24 @@ public class TaskService {
         return ResponseEntity.status(HttpStatus.OK).body(pendingTasks);
     }
 
+    public ResponseEntity getAllTasks(String username) {
+        if(!userRepository.findByUsername(username).isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+        ApplicationUser user = userRepository.findByUsername(username).get();
+
+        Optional <Family> familyOptional = familyRepository.findById(user.getFamilyId());
+
+        if(!familyOptional.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Family not found");
+        }
+
+
+        Family family = familyOptional.get();
+
+        List<Task> tasks = family.getTasks();
+
+        return ResponseEntity.status(HttpStatus.OK).body(tasks);
+    }
+
 } 

@@ -27,6 +27,14 @@ public class TaskController {
         return ResponseEntity.status(tasks.getStatusCode()).body(tasks.getBody());
     }
 
+    // get all tasks
+    @GetMapping("/getAllTasks/{username}")
+    public ResponseEntity getAllTasks(@PathVariable String username){
+        ResponseEntity tasks = taskService.getAllTasks(username);
+        return ResponseEntity.status(tasks.getStatusCode()).body(tasks.getBody());
+    }
+    
+
     @PostMapping("/completeTask/{username}/{taskId}")
     public ResponseEntity completeTask(@PathVariable String username, @PathVariable Integer taskId){
         ResponseEntity task = taskService.completeTask(username,taskId);
