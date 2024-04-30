@@ -41,8 +41,9 @@ public class TaskService {
 
 
     public ResponseEntity addTask(CreateTaskDTO task) {
-        // add task to family then return success message or error message
-        if(task.getTaskDueDate().isBefore(OffsetDateTime.now())){
+        // add task to family then return success message or error message but same day due date is allowed
+        
+        if(task.getTaskDueDate().withHour(23).withMinute(59).withSecond(59).isBefore(OffsetDateTime.now())){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Due date cannot be before request date");
         }
         ApplicationUser taskCreator = userRepository.findByUsername(task.getTaskCreatorUserName()).get();
