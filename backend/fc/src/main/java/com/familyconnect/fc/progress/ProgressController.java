@@ -39,9 +39,6 @@ public class ProgressController {
     @GetMapping("/getByUserId/{userName}")
     public ResponseEntity<?> getProgressByUserName(@PathVariable String userName) {
         List<Progress> userProgress = progressService.getProgressByUserName(userName);
-        if (userProgress.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No progress found for user: " + userName);
-        }
         return ResponseEntity.ok(userProgress);
     }
 
