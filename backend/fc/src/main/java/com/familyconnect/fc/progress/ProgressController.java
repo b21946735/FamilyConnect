@@ -33,7 +33,7 @@ public class ProgressController {
     @GetMapping("/getFamilyAll/{userName}")
     public ResponseEntity<?> getAllProgress(@PathVariable String userName) {
         List<Progress> allProgress = progressService.getAllProgress(userName);
-        if (allProgress != null&& allProgress.isEmpty()) {
+        if (allProgress == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found or no progress found.");
         }
         return ResponseEntity.ok(allProgress);

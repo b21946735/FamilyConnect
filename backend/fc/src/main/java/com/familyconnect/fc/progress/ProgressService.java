@@ -65,7 +65,7 @@ public class ProgressService {
 
         // loop through all progresses and check if the progress is assigned to a user in the family
         for (int i = 0; i < progresses.size(); i++) {
-            if (!family.getFamilyMembers().contains(progresses.get(i).getAssignedTo())) {
+            if (family.getFamilyMembers().contains(progresses.get(i).getAssignedTo())) {
                 familyProgresses.add(progresses.get(i));
             }
         }
