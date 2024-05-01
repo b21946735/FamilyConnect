@@ -18,7 +18,7 @@ public class ParentController {
     private UserService userService;
 
     @GetMapping("/getUser/{username}")
-    public ResponseEntity getTasks(@PathVariable String username){
+    public ResponseEntity<?> getTasks(@PathVariable String username){
         ApplicationUser user = userService.getUser(username);
         if(user == null){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not found.");

@@ -6,7 +6,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 import java.time.OffsetDateTime;
-import java.util.Date;
+import java.util.List;
+
+import com.familyconnect.fc.utils.Enums;
+
+import java.util.ArrayList;
+
+
+
 
 @Entity
 public class Progress {
@@ -20,18 +27,23 @@ public class Progress {
     private OffsetDateTime dueDate;
     private String createdBy;
     private String assignedTo;
+    private List<String> rewards = new ArrayList<>();
+    private Enums.ProgressStatus progressStatus;
+
 
     public Progress() {
         super();
     }
 
-    public Progress(String progressName, int quota, int currentStatus, OffsetDateTime dueDate, String createdBy, String assignedTo) {
+    public Progress(String progressName, int quota, int currentStatus, OffsetDateTime dueDate, String createdBy, String assignedTo, List<String> rewards) {
         this.progressName = progressName;
         this.quota = quota;
         this.currentStatus = currentStatus;
         this.dueDate = dueDate;
         this.createdBy = createdBy;
         this.assignedTo = assignedTo;
+        this.rewards = rewards;
+        this.progressStatus = Enums.ProgressStatus.IN_PROGRESS;
     }
 
     // Getter ve Setter metotları
@@ -90,5 +102,21 @@ public class Progress {
 
     public void setAssignedTo(String assignedTo) {
         this.assignedTo = assignedTo;
+    }
+
+    public List<String> getRewards() {
+        return rewards;
+    }
+
+    public void setRewards(List<String> rewards) {
+        this.rewards = rewards;
+    }
+
+    public Enums.ProgressStatus getProgressStatus() {
+        return progressStatus;
+    }
+
+    public void setProgressStatus(Enums.ProgressStatus progressStatus) {
+        this.progressStatus = progressStatus;
     }
 }

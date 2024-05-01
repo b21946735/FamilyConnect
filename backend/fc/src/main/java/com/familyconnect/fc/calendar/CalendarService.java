@@ -14,16 +14,12 @@ import com.familyconnect.fc.event.Event;
 import com.familyconnect.fc.event.EventRepository;
 import com.familyconnect.fc.family.Family;
 import com.familyconnect.fc.family.FamilyRepository;
-import com.familyconnect.fc.progress.Progress;
-import com.familyconnect.fc.progress.ProgressService;
-import com.familyconnect.fc.task.TaskRepository;
+
 import com.familyconnect.fc.user.ApplicationUser;
 import com.familyconnect.fc.user.UserRepository;
-import com.familyconnect.fc.utils.Enums.TaskStatus;
 import java.util.ArrayList;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.Date;
 
 @Service
 @Transactional
@@ -39,7 +35,7 @@ public class CalendarService {
         private EventRepository eventRepository;
 
 
-        public ResponseEntity getCalendar(String username){
+        public ResponseEntity<?> getCalendar(String username){
             if(!userRepository.findByUsername(username).isPresent()){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
             }

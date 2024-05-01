@@ -1,11 +1,6 @@
 package com.familyconnect.fc.profile;
 
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.Date;
 
-import javax.print.DocFlavor.STRING;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.familyconnect.fc.authentication.AuthenticationService;
-import com.familyconnect.fc.family.Family;
-import com.familyconnect.fc.family.FamilyRepository;
-import com.familyconnect.fc.progress.Progress;
-import com.familyconnect.fc.progress.ProgressService;
+
 import com.familyconnect.fc.user.ApplicationUser;
 import com.familyconnect.fc.user.UserRepository;
-import com.familyconnect.fc.utils.Enums.TaskStatus;
 
 
 @Service
@@ -34,7 +25,7 @@ public class ProfileService {
     @Autowired
     private AuthenticationService authenticationService;
 
-    public ResponseEntity updateProfileName(String username, String name) {
+    public ResponseEntity<?> updateProfileName(String username, String name) {
         Optional<ApplicationUser> userOptional = userRepository.findByUsername(username);
         if(!userOptional.isPresent()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
@@ -45,7 +36,7 @@ public class ProfileService {
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
-    public ResponseEntity updateProfilePassword(String username,String oldPassword ,String password) {
+    public ResponseEntity<?> updateProfilePassword(String username,String oldPassword ,String password) {
         Optional<ApplicationUser> userOptional = userRepository.findByUsername(username);
         if(!userOptional.isPresent()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
@@ -56,7 +47,7 @@ public class ProfileService {
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
-    public ResponseEntity updateProfilePicture(String username, int profilePictureId) {
+    public ResponseEntity<?> updateProfilePicture(String username, int profilePictureId) {
         Optional<ApplicationUser> userOptional = userRepository.findByUsername(username);
         if(!userOptional.isPresent()){  
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");

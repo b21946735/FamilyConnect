@@ -1,6 +1,5 @@
 package com.familyconnect.fc.event;
 
-import com.familyconnect.fc.family.Family;
 import com.familyconnect.fc.family.FamilyRepository;
 
 import java.util.List;

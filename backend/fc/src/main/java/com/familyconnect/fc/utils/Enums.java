@@ -13,4 +13,10 @@ public class Enums {
         FAILED,
         PENDING
     }
+
+    public enum ProgressStatus {
+        IN_PROGRESS, 
+        COMPLETED, 
+        CANCELLED
+    }
 }

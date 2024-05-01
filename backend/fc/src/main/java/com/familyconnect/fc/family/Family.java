@@ -5,17 +5,18 @@ package com.familyconnect.fc.family;
 import java.util.ArrayList;
 import java.util.List;
 
+
+import com.familyconnect.fc.spin.Reward;
+import com.familyconnect.fc.spin.Spin;
 import com.familyconnect.fc.task.Task;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 
 @Entity
 public class Family {
@@ -31,6 +32,13 @@ public class Family {
     @OneToMany(mappedBy = "family", cascade = CascadeType.ALL)
     private List<Task> tasks = new ArrayList<>();
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "family", cascade = CascadeType.ALL)
+    private List<Spin> spins = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "family", cascade = CascadeType.ALL)
+    private List<Reward> earnedRewards = new ArrayList<>();
   
     public Family(String familyName, String creatorUserName) {
 		super();
@@ -92,4 +100,86 @@ public class Family {
     public void removeTask(Task task) {
         this.tasks.remove(task);
     }
+
+
+    // getter and setter for spins
+    public List<Spin> getSpins() {
+        return spins;
+    }
+
+    public void setSpins(List<Spin> spins) {
+        this.spins = spins;
+    }
+
+    public void addSpin(Spin spin) {
+        System.out.println("Adding spin for user " + spin.getSpinOwner() + " rewards: " + spin.getSpinRewards().toString());
+        spins.add(spin);
+    }
+
+    public boolean removeSpin(Integer spinId) {
+        for (Spin spin : spins) {
+            if (spin.getId() == spinId) {
+                spins.remove(spin);
+                System.out.println("Spin removed from family spins. Spin id: " + spinId);
+                return true;
+            }
+        }
+
+        System.out.println("Spin not found in family spins. Spin id: " + spinId);
+
+        return false;
+    }
+
+    public List<Spin> getUserSpins(String userName) {
+        List<Spin> userSpins = new ArrayList<>();
+
+        for (Spin spin : spins) {
+            if (spin.getSpinOwner().equals(userName)) {
+                userSpins.add(spin);
+            }
+        }
+
+        return userSpins;
+    }
+
+    // getter and setter for earned rewards
+    public List<Reward> getEarnedRewards() {
+        return earnedRewards;
+    }
+
+    public void setEarnedRewards(List<Reward> earnedRewards) {
+        this.earnedRewards = earnedRewards;
+    }
+
+    public void addEarnedReward(Reward reward) {
+        earnedRewards.add(reward);
+    }
+
+    public void removeEarnedReward(Reward reward) {
+        earnedRewards.remove(reward);
+    }
+
+
+    public void PrintSpins() {
+        for (Spin spin : spins) {
+            System.out.println("Spin owner: " + spin.getSpinOwner() + " rewards: " + spin.getSpinRewards().toString());
+        }
+
+        if (spins.size() == 0) {
+            System.out.println("No spins available");
+        }
+    }
+
+    public List<Reward> getUserRewards(String username) {
+        List<Reward> userRewards = new ArrayList<>();
+
+        for (Reward reward : earnedRewards) {
+            if (reward.getRewardOwner().equals(username)) {
+                userRewards.add(reward);
+            }
+        }
+
+        return userRewards;
+    }
+    
 }

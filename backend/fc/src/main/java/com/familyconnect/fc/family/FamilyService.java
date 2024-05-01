@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,9 @@ import com.familyconnect.fc.user.ApplicationUser;
 import com.familyconnect.fc.user.UserRepository;
 import com.familyconnect.fc.utils.Enums.TaskStatus;
 import com.familyconnect.fc.utils.Enums.UserRole;
-import com.familyconnect.fc.family.FamilyRequestDTO;
+import com.familyconnect.fc.spin.Reward;
+import com.familyconnect.fc.spin.RewardRepository;
+import com.familyconnect.fc.spin.SpinRepository;
 import com.familyconnect.fc.task.Task;
 import com.familyconnect.fc.task.TaskRepository;
 
@@ -34,7 +37,15 @@ public class FamilyService {
     @Autowired
     private TaskRepository taskRepository;
 
-    public ResponseEntity Createfamily(FamilyRequestDTO family) {
+    @Autowired
+    private RewardRepository rewardRepository;
+
+    @Autowired
+    private SpinRepository spinRepository;
+
+    
+
+    public ResponseEntity<?> Createfamily(FamilyRequestDTO family) {
         Family myFamily = new Family(family.getFamilyName(), family.getFamilyCreatorUserName());
         
         String creatorName = family.getFamilyCreatorUserName();
@@ -68,7 +79,7 @@ public class FamilyService {
   
     }
 
-    public ResponseEntity GetFamily(String userName) {
+    public ResponseEntity<?> GetFamily(String userName) {
         // check if user exists
         if(!userRepository.findByUsername(userName).isPresent()){
             System.out.println("User not found while getting family");
@@ -87,7 +98,7 @@ public class FamilyService {
         return ResponseEntity.ok(family);
     }
 
-    public ResponseEntity addFamilyMembers(int familyId, List<String> userNames) {
+    public ResponseEntity<?> addFamilyMembers(int familyId, List<String> userNames) {
         Optional<Family> familyOpt = familyRepository.findById(familyId);
         if (!familyOpt.isPresent()) {
             System.out.println("Family not found with ID: " + familyId);
@@ -117,7 +128,7 @@ public class FamilyService {
         return ResponseEntity.ok(family);
     }
 
-    public ResponseEntity updateFamilyName(String  username, String familyName) {
+    public ResponseEntity<?> updateFamilyName(String  username, String familyName) {
         Optional<ApplicationUser> userOpt = userRepository.findByUsername(username);
         if (!userOpt.isPresent()) {
             System.out.println("User not found while updating family name");
@@ -147,7 +158,7 @@ public class FamilyService {
         return ResponseEntity.ok(family);
     }
 
-    public ResponseEntity getFamilyMembersInformation(String userName) {
+    public ResponseEntity<?> getFamilyMembersInformation(String userName) {
         if(!userRepository.findByUsername(userName).isPresent()){
             System.out.println("User not found while getting family members information");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not found while getting family members information");
@@ -186,14 +197,14 @@ public class FamilyService {
     public void updateTaskStatus(Family family){
         List<Task> tasks = family.getTasks();
         for(Task task : tasks){
-            if(task.getTaskStatus() == TaskStatus.IN_PROGRESS && task.getTaskDueDate().isBefore(OffsetDateTime.now())){
+            if(task.getTaskStatus() == TaskStatus.IN_PROGRESS && task.getTaskDueDate().withHour(23).isBefore(OffsetDateTime.now())){
                 task.setTaskStatus(TaskStatus.FAILED);
                 taskRepository.save(task);
             }
         }
     }
 
-    public ResponseEntity removeFamilyMember(Integer familyId, String userName) {
+    public ResponseEntity<?> removeFamilyMember(Integer familyId, String userName) {
         Optional<Family> familyOpt = familyRepository.findById(familyId);
         if (!familyOpt.isPresent()) {
             System.out.println("Family not found with ID: " + familyId);
@@ -217,6 +228,120 @@ public class FamilyService {
         user.setFamilyId(-1);
         userRepository.save(user);
         return ResponseEntity.ok(family);
+    }
+
+    public ResponseEntity<?> getSpins(String username) {
+        if(!userRepository.findByUsername(username).isPresent()){
+            System.out.println("User not found while getting spins");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not found while getting spins");
+        }
+        Integer familyId = userRepository.findByUsername(username).get().getFamilyId();
+        if(familyId == null || familyId == -1){
+            System.out.println("User does not belong to any family");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User does not belong to any family");
+        }
+        Optional<Family> familyOpt = familyRepository.findById(familyId);
+        if (!familyOpt.isPresent()) {
+            System.out.println("Family not found with ID: " + familyId);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Family not found with ID: " );
+        }
+        Family family = familyOpt.get();
+        family.PrintSpins();
+        return ResponseEntity.ok(family.getSpins());
+    }
+
+    public ResponseEntity<?> setReward(FamilySpinDataDTO spinData) {
+        if(!userRepository.findByUsername(spinData.getUsername()).isPresent()){
+            System.out.println("User not found while rolling spin");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not found while rolling spin");
+        }
+        Integer familyId = userRepository.findByUsername(spinData.getUsername()).get().getFamilyId();
+        if(familyId == null || familyId == -1){
+            System.out.println("User does not belong to any family");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User does not belong to any family");
+        }
+        Optional<Family> familyOpt = familyRepository.findById(familyId);
+        if (!familyOpt.isPresent()) {
+            System.out.println("Family not found with ID: " + familyId);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Family not found with ID: " );
+        }
+        Family family = familyOpt.get();
+
+
+        // remove spin from user
+
+        boolean isRemoved =family.removeSpin(spinData.getId());
+        spinRepository.deleteById(spinData.getId());
+        if(!isRemoved){
+            System.out.println("Spin not found for user: " + spinData.getUsername());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Spin not found for user: " + spinData.getUsername());
+        }
+
+        // add prize to user
+        Reward reward = new Reward(spinData.getUsername(), spinData.getPrize(), family);
+        family.addEarnedReward(reward);
+        familyRepository.save(family);
+        
+
+        return ResponseEntity.ok(reward);
+    }
+
+
+    public ResponseEntity<?> getFamilyRewards(String username) {
+        if(!userRepository.findByUsername(username).isPresent()){
+            System.out.println("User not found while getting family rewards");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not found while getting family rewards");
+        }
+        Integer familyId = userRepository.findByUsername(username).get().getFamilyId();
+        if(familyId == null || familyId == -1){
+            System.out.println("User does not belong to any family");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User does not belong to any family");
+        }
+        Optional<Family> familyOpt = familyRepository.findById(familyId);
+        if (!familyOpt.isPresent()) {
+            System.out.println("Family not found with ID: " + familyId);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Family not found with ID: " );
+        }
+        Family family = familyOpt.get();
+        return ResponseEntity.ok(family.getEarnedRewards());
+    }
+
+    public ResponseEntity<?> getUserSpins(String username) {
+        if(!userRepository.findByUsername(username).isPresent()){
+            System.out.println("User not found while getting spins");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not found while getting spins");
+        }
+        Integer familyId = userRepository.findByUsername(username).get().getFamilyId();
+        if(familyId == null || familyId == -1){
+            System.out.println("User does not belong to any family");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User does not belong to any family");
+        }
+        Optional<Family> familyOpt = familyRepository.findById(familyId);
+        if (!familyOpt.isPresent()) {
+            System.out.println("Family not found with ID: " + familyId);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Family not found with ID: " );
+        }
+        Family family = familyOpt.get();
+        return ResponseEntity.ok(family.getUserSpins(username));
+    }
+
+    public ResponseEntity<?> getUserRewards(String username) {
+        if(!userRepository.findByUsername(username).isPresent()){
+            System.out.println("User not found while getting rewards");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not found while getting rewards");
+        }
+        Integer familyId = userRepository.findByUsername(username).get().getFamilyId();
+        if(familyId == null || familyId == -1){
+            System.out.println("User does not belong to any family");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User does not belong to any family");
+        }
+        Optional<Family> familyOpt = familyRepository.findById(familyId);
+        if (!familyOpt.isPresent()) {
+            System.out.println("Family not found with ID: " + familyId);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Family not found with ID: " );
+        }
+        Family family = familyOpt.get();
+        return ResponseEntity.ok(family.getUserRewards(username));
     }
 
 

@@ -16,18 +16,15 @@ public class ProgressController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createProgress(@RequestBody ProgressCreateDTO progress) {
-        Progress createdProgress = progressService.createProgress(progress);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdProgress);
+        ResponseEntity<?> createdProgress = progressService.createProgress(progress);
+        return ResponseEntity.status(createdProgress.getStatusCode()).body(createdProgress.getBody());
     }
 
     @DeleteMapping("/delete/{progressId}")
     public ResponseEntity<?> deleteProgress(@PathVariable Integer progressId) {
-        if (progressService.existsById(progressId)) { // Progress var mı kontrol et
-            progressService.deleteProgress(progressId);
-            return ResponseEntity.ok("Progress deleted successfully.");
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Progress not found.");
-        }
+        ResponseEntity<?> deletedProgress = progressService.deleteProgress(progressId);
+        return ResponseEntity.status(deletedProgress.getStatusCode()).body(deletedProgress.getBody());
+
     }
 
     @GetMapping("/getFamilyAll/{userName}")
@@ -50,10 +47,21 @@ public class ProgressController {
 
     @PutMapping("/update/{progressId}")
     public ResponseEntity<?> updateProgress(@PathVariable Integer progressId, @RequestBody ProgressCreateDTO progressDetails) {
-        if (!progressService.existsById(progressId)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Progress not found for id: " + progressId);
-        }
-        Progress updatedProgress = progressService.updateProgress(progressId, progressDetails);
-        return ResponseEntity.ok(updatedProgress);
+        ResponseEntity<?> updatedProgress = progressService.updateProgress(progressId, progressDetails);
+        return ResponseEntity.status(updatedProgress.getStatusCode()).body(updatedProgress.getBody());
+    }
+
+    // complate progress
+    @PostMapping("/completeProgress/{userName}/{progressId}")
+    public ResponseEntity<?> completeProgress(@PathVariable String userName, @PathVariable Integer progressId) {
+        ResponseEntity<?> completedProgress = progressService.completeProgress(userName, progressId);
+        return ResponseEntity.status(completedProgress.getStatusCode()).body(completedProgress.getBody());
+    }
+
+    // cancel progress
+    @PostMapping("/cancelProgress/{userName}/{progressId}")
+    public ResponseEntity<?> cancelProgress(@PathVariable String userName, @PathVariable Integer progressId) {
+        ResponseEntity<?> canceledProgress = progressService.cancelProgress(userName, progressId);
+        return ResponseEntity.status(canceledProgress.getStatusCode()).body(canceledProgress.getBody());
     }
 }

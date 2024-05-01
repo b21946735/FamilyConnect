@@ -3,6 +3,10 @@ package com.familyconnect.fc.progress;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
+import java.util.List;
+
+import java.util.ArrayList;
+
 
 public class ProgressCreateDTO {
     
@@ -12,6 +16,9 @@ public class ProgressCreateDTO {
     private Date dueDate;
     private String createdBy;
     private String assignedTo;
+
+    private List<String> rewards = new ArrayList<>();
+
 
     // Constructor, getters ve setters
 
@@ -25,7 +32,8 @@ public class ProgressCreateDTO {
          int currentStatus, 
          Date dueDate, 
          String createdBy,
-         String assignedTo
+         String assignedTo,
+            List<String> rewards
          ) {
         this.progressName = progressName;
         this.quota = quota;
@@ -33,7 +41,9 @@ public class ProgressCreateDTO {
         this.dueDate = dueDate;
         this.createdBy = createdBy;
         this.assignedTo = assignedTo;
+        this.rewards = rewards;
     }
+    
 
     // Getters
     public String getProgressName() {
@@ -84,6 +94,14 @@ public class ProgressCreateDTO {
 
     public void setAssignedTo(String assignedTo) {
         this.assignedTo = assignedTo;
+    }
+
+    public List<String> getRewards() {
+        return rewards;
+    }
+
+    public void setRewards(List<String> rewards) {
+        this.rewards = rewards;
     }
 }
 

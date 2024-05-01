@@ -2,9 +2,6 @@ package com.familyconnect.fc.task;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Date;
-
-import javax.print.DocFlavor.STRING;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,7 +37,7 @@ public class TaskService {
     private ProgressService progressService;
 
 
-    public ResponseEntity addTask(CreateTaskDTO task) {
+    public ResponseEntity<?> addTask(CreateTaskDTO task) {
         // add task to family then return success message or error message but same day due date is allowed
         
         if(task.getTaskDueDate().withHour(23).withMinute(59).withSecond(59).isBefore(OffsetDateTime.now())){
@@ -70,7 +67,7 @@ public class TaskService {
         return ResponseEntity.status(HttpStatus.CREATED).body(newTask);
     }
         
-    public ResponseEntity getTasks(String username){
+    public ResponseEntity<?> getTasks(String username){
         if(!userRepository.findByUsername(username).isPresent()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
@@ -92,7 +89,7 @@ public class TaskService {
     }
 
     
-    public ResponseEntity pendingTask(String username, Integer taskId){
+    public ResponseEntity<?> pendingTask(String username, Integer taskId){
         Optional<Task> task = taskRepository.findById(taskId);
         if(!task.isPresent()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
@@ -124,7 +121,7 @@ public class TaskService {
     }
 
     // reject pending task
-    public ResponseEntity rejectTask(String username, Integer taskId){
+    public ResponseEntity<?> rejectTask(String username, Integer taskId){
         Optional<Task> task = taskRepository.findById(taskId);
         if(!task.isPresent()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
@@ -150,7 +147,7 @@ public class TaskService {
 
         // check if task time is not passed if it is passed set task status to failed else set it to in progress
         OffsetDateTime now = OffsetDateTime.now();
-        if(rejectedTask.getTaskDueDate().isBefore(now)){
+        if(rejectedTask.getTaskDueDate().withHour(23).isBefore(now)){
             rejectedTask.setTaskStatus(TaskStatus.FAILED);
         }
         else{
@@ -165,7 +162,7 @@ public class TaskService {
     }
 
 
-    public ResponseEntity completeTask(String username, Integer taskId){
+    public ResponseEntity<?> completeTask(String username, Integer taskId){
         Optional<Task> task = taskRepository.findById(taskId);
         if(!task.isPresent()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
@@ -202,7 +199,7 @@ public class TaskService {
         
         // check if any progress time has not passed yet and update the progress 
         for(Progress progress : progressList){
-            if(progress.getDueDate().isAfter(now)){
+            if(progress.getDueDate().withHour(0).isAfter(now)){
                 progress.setCurrentStatus(progress.getCurrentStatus() + completedTask.getTaskRewardPoints());
                 progressService.updateProgress(progress.getId(), progress);
             }
@@ -213,7 +210,7 @@ public class TaskService {
         return ResponseEntity.status(HttpStatus.OK).body(completedTask);
     }
 
-    public ResponseEntity updateTask(Integer taskId, CreateTaskDTO task){
+    public ResponseEntity<?> updateTask(Integer taskId, CreateTaskDTO task){
         Optional<Task> taskToUpdate = taskRepository.findById(taskId);
         if(!taskToUpdate.isPresent()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
@@ -227,7 +224,7 @@ public class TaskService {
         return ResponseEntity.status(HttpStatus.OK).body(updatedTask);
     }
 
-    public ResponseEntity deleteTask(String userName, Integer taskId){
+    public ResponseEntity<?> deleteTask(String userName, Integer taskId){
         Optional<Task> taskToDelete = taskRepository.findById(taskId);
         if(!taskToDelete.isPresent()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
@@ -250,7 +247,7 @@ public class TaskService {
         return ResponseEntity.status(HttpStatus.OK).body("Task deleted successfully");
     }
 
-    public ResponseEntity getPendingTasks(String username) {
+    public ResponseEntity<?> getPendingTasks(String username) {
         if(!userRepository.findByUsername(username).isPresent()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
@@ -276,7 +273,7 @@ public class TaskService {
         return ResponseEntity.status(HttpStatus.OK).body(pendingTasks);
     }
 
-    public ResponseEntity getAllTasks(String username) {
+    public ResponseEntity<?> getAllTasks(String username) {
         if(!userRepository.findByUsername(username).isPresent()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
