@@ -76,6 +76,8 @@ public class SecurityConfiguration {
                 auth.requestMatchers("/admin/**").hasRole(UserRole.ADMIN.name());
                 auth.requestMatchers("/parent/**").hasAnyRole(UserRole.ADMIN.name(), UserRole.PARENT.name());
                 auth.requestMatchers("/child/**").hasAnyRole(UserRole.ADMIN.name(), UserRole.PARENT.name(), UserRole.CHILD.name()); 
+                auth.requestMatchers("/family/**").hasAnyRole(UserRole.ADMIN.name(), UserRole.PARENT.name(), UserRole.CHILD.name()); 
+                auth.requestMatchers("/calendar/**").hasAnyRole(UserRole.ADMIN.name(), UserRole.PARENT.name(), UserRole.CHILD.name()); 
                 auth.anyRequest().authenticated();
             });
             
