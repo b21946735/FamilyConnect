@@ -197,7 +197,7 @@ public class FamilyService {
     public void updateTaskStatus(Family family){
         List<Task> tasks = family.getTasks();
         for(Task task : tasks){
-            if(task.getTaskStatus() == TaskStatus.IN_PROGRESS && task.getTaskDueDate().withHour(23).isBefore(OffsetDateTime.now())){
+            if(task.getTaskStatus() == TaskStatus.IN_PROGRESS && task.getTaskDueDate().withHour(23).withMinute(59).withSecond(59).isBefore(OffsetDateTime.now())){
                 task.setTaskStatus(TaskStatus.FAILED);
                 taskRepository.save(task);
             }
