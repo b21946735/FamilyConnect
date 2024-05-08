@@ -5,7 +5,8 @@ package com.familyconnect.fc.family;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import com.familyconnect.fc.chat.ChatMessage;
+import com.familyconnect.fc.chat.ChatSurvey;
 import com.familyconnect.fc.spin.Reward;
 import com.familyconnect.fc.spin.Spin;
 import com.familyconnect.fc.task.Task;
@@ -39,6 +40,14 @@ public class Family {
     @JsonIgnore
     @OneToMany(mappedBy = "family", cascade = CascadeType.ALL)
     private List<Reward> earnedRewards = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "family", cascade = CascadeType.ALL)
+    private List<ChatMessage> chatMessages = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "family", cascade = CascadeType.ALL)
+    private List<ChatSurvey> chatSurveys = new ArrayList<>();
   
     public Family(String familyName, String creatorUserName) {
 		super();
@@ -180,6 +189,50 @@ public class Family {
         }
 
         return userRewards;
+    }
+
+    public void AddChatMessage(ChatMessage chatMessage) {
+        chatMessages.add(chatMessage);
+    }
+
+    public List<ChatMessage> getChatMessages() {
+        return chatMessages;
+    }
+
+    public void setChatMessages(List<ChatMessage> chatMessages) {
+        this.chatMessages = chatMessages;
+    }
+
+    public void PrintChatMessages() {
+        for (ChatMessage chatMessage : chatMessages) {
+            System.out.println("Sender: " + chatMessage.getSenderUsername() + " Message: " + chatMessage.getMessage());
+        }
+
+        if (chatMessages.size() == 0) {
+            System.out.println("No chat messages available");
+        }
+    }
+
+    public void AddChatSurvey(ChatSurvey chatSurvey) {
+        chatSurveys.add(chatSurvey);
+    }
+
+    public List<ChatSurvey> getChatSurveys() {
+        return chatSurveys;
+    }
+
+    public void setChatSurveys(List<ChatSurvey> chatSurveys) {
+        this.chatSurveys = chatSurveys;
+    }
+
+    public void PrintChatSurveys() {
+        for (ChatSurvey chatSurvey : chatSurveys) {
+            System.out.println("Sender: " + chatSurvey.getSenderName() + " Survey: " + chatSurvey.getSurvey().toString());
+        }
+
+        if (chatSurveys.size() == 0) {
+            System.out.println("No chat surveys available");
+        }
     }
     
 }
