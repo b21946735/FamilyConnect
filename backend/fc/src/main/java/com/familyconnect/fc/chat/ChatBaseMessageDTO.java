@@ -2,6 +2,8 @@ package com.familyconnect.fc.chat;
 import java.util.*; 
 
 
+
+
 public class ChatBaseMessageDTO {
     private Integer id;
     private String type;
@@ -10,8 +12,7 @@ public class ChatBaseMessageDTO {
     private String message;
     private String description;
     private List<String> survey;
-    private Map<String, Integer> surveyResults  = new HashMap<String, Integer>(); // map username to selected option
-
+    private List<SurveyFrontDTO> surveyVotes = new ArrayList<SurveyFrontDTO>();
 
     private String timestamp;
 
@@ -23,22 +24,25 @@ public class ChatBaseMessageDTO {
         this.senderUsername = senderUsername;
         this.senderName = senderName;
         this.timestamp = timestamp;
-
-        if (type.equals("survey")) {
-            FillSurvey( description, survey, surveyResults);
-        }else if (type.equals("message")) {
-            FillMessage(message);
+        this.description = description;
+        this.survey = survey;
+        this.message = message;
+        if(type.equals("survey")){
+            SetSurveyResults(surveyResults);
         }
     }
 
-    private void FillMessage(String message) {
-        this.message = message;
-    }
-
-    private void FillSurvey(String description, List<String> survey, Map<String, Integer> surveyResults) {
-        this.description = description;
-        this.survey = survey;
-        this.surveyResults = surveyResults;
+    public void SetSurveyResults(Map<String, Integer> surveyResults) {
+        for (String option : survey) {
+            List<String> voters = new ArrayList<String>();
+            for (Map.Entry<String, Integer> entry : surveyResults.entrySet()) {
+                if (entry.getValue() == survey.indexOf(option)) {
+                    voters.add(entry.getKey());
+                }
+            }
+            SurveyFrontDTO surveyFrontDTO = new SurveyFrontDTO(option, voters);
+            surveyVotes.add(surveyFrontDTO);
+        }
     }
 
     public ChatBaseMessageDTO() {
@@ -95,12 +99,12 @@ public class ChatBaseMessageDTO {
         this.survey = survey;
     }
 
-    public Map<String, Integer> getSurveyResults() {
-        return surveyResults;
+    public List<SurveyFrontDTO> getSurveyVotes() {
+        return surveyVotes;
     }
 
-    public void setSurveyResults(Map<String, Integer> surveyResults) {
-        this.surveyResults = surveyResults;
+    public void setSurveyVotes(List<SurveyFrontDTO> surveyVotes) {
+        this.surveyVotes = surveyVotes;
     }
 
     public String getDescription() {
