@@ -185,12 +185,6 @@ public class TaskService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User is not parent");
         }
 
-        // check if task is in progress
-        if(completedTask.getTaskStatus() != TaskStatus.IN_PROGRESS){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Task is not in progress");
-        }
-
-
         completedTask.setTaskStatus(TaskStatus.COMPLETED);
         taskRepository.save(completedTask);
         
