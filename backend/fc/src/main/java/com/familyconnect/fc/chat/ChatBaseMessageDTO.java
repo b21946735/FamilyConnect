@@ -11,7 +11,6 @@ public class ChatBaseMessageDTO {
     private String senderName;
     private String message;
     private String description;
-    private List<String> survey;
     private List<SurveyFrontDTO> surveyVotes = new ArrayList<SurveyFrontDTO>();
 
     private String timestamp;
@@ -25,14 +24,13 @@ public class ChatBaseMessageDTO {
         this.senderName = senderName;
         this.timestamp = timestamp;
         this.description = description;
-        this.survey = survey;
         this.message = message;
         if(type.equals("survey")){
-            SetSurveyResults(surveyResults);
+            SetSurveyResults(surveyResults, survey);
         }
     }
 
-    public void SetSurveyResults(Map<String, Integer> surveyResults) {
+    public void SetSurveyResults(Map<String, Integer> surveyResults, List<String> survey) {
         for (String option : survey) {
             List<String> voters = new ArrayList<String>();
             for (Map.Entry<String, Integer> entry : surveyResults.entrySet()) {
@@ -89,14 +87,6 @@ public class ChatBaseMessageDTO {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public List<String> getSurvey() {
-        return survey;
-    }
-
-    public void setSurvey(List<String> survey) {
-        this.survey = survey;
     }
 
     public List<SurveyFrontDTO> getSurveyVotes() {
