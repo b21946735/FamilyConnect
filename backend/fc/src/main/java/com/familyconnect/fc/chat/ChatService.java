@@ -53,7 +53,7 @@ public class ChatService {
 
         receiverFamily.AddChatMessage(chatMessage);
         
-        return ResponseEntity.ok("Message sent successfully");
+        return ResponseEntity.ok(chatMessageDTO);
     }
 
     public ResponseEntity<?> sendSurvey(ChatSurveyDTO chatSurveyDTO) {
@@ -81,7 +81,7 @@ public class ChatService {
 
         receiverFamily.AddChatSurvey(chatSurvey);
         
-        return ResponseEntity.ok("Survey created successfully");
+        return ResponseEntity.ok(chatSurveyDTO);
     }
 
     public ResponseEntity<?> getMessages(String username) {
@@ -165,7 +165,7 @@ public class ChatService {
         chatSurveyRepository.save(survey);
 
 
-        return ResponseEntity.ok("Voted successfully");
+        return ResponseEntity.ok(chatSurveyVoteDTO);
 
     }
 }
