@@ -48,6 +48,9 @@ public class Family {
     @JsonIgnore
     @OneToMany(mappedBy = "family", cascade = CascadeType.ALL)
     private List<ChatSurvey> chatSurveys = new ArrayList<>();
+
+    private List<String> familyPhotos = new ArrayList<String>();
+
   
     public Family(String familyName, String creatorUserName) {
 		super();
@@ -233,6 +236,22 @@ public class Family {
         if (chatSurveys.size() == 0) {
             System.out.println("No chat surveys available");
         }
+    }
+
+    public List<String> getFamilyPhotos() {
+        return familyPhotos;
+    }
+
+    public void setFamilyPhotos(List<String> familyPhotos) {
+        this.familyPhotos = familyPhotos;
+    }
+
+    public void addFamilyPhoto(String photo) {
+        familyPhotos.add(photo);
+    }
+
+    public void removeFamilyPhoto(String photo) {
+        familyPhotos.remove(photo);
     }
     
 }

@@ -41,6 +41,8 @@ public class ApplicationUser implements UserDetails{
 
 	private int profilePictureId;
 
+	private String profilePictureUrl;
+
     @ManyToMany(fetch=FetchType.EAGER)
     @JoinTable(
         name="user_role_junction",
@@ -168,6 +170,14 @@ public class ApplicationUser implements UserDetails{
 			}
 		}
 		return false;
+	}
+
+	public String getProfilePictureUrl() {
+		return this.profilePictureUrl;
+	}
+
+	public void setProfilePictureUrl(String profilePictureUrl) {
+		this.profilePictureUrl = profilePictureUrl;
 	}
 
 

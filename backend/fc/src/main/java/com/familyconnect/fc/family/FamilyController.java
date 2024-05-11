@@ -88,4 +88,26 @@ public class FamilyController {
         return ResponseEntity.status(rewards.getStatusCode()).body(rewards.getBody());
     }
 
+    // get family photos
+    @GetMapping("/getFamilyPhotos")
+    public ResponseEntity<?> getFamilyPhotos(@RequestParam("username") String username){
+        ResponseEntity<?> photos = familyService.getFamilyPhotos(username);
+        return ResponseEntity.status(photos.getStatusCode()).body(photos.getBody());
+    }
+
+    // add family photos
+    @PostMapping("/addFamilyPhotos")
+    public ResponseEntity<?> addFamilyPhotos( @RequestBody FamilyPhotosDTO photos){
+        ResponseEntity<?> newphotos = familyService.addFamilyPhotos( photos);
+        return ResponseEntity.status(newphotos.getStatusCode()).body(newphotos.getBody());
+    }
+
+    // set family photos
+    @PutMapping("/setFamilyPhotos")
+    public ResponseEntity<?> setFamilyPhotos(@RequestBody FamilyPhotosDTO photos){
+        ResponseEntity<?> newphotos = familyService.setFamilyPhotos( photos);
+        return ResponseEntity.status(newphotos.getStatusCode()).body(newphotos.getBody());
+    }
+
+
 }

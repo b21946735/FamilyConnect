@@ -345,4 +345,92 @@ public class FamilyService {
     }
 
 
+    public ResponseEntity<?> getFamilyPhotos(String username) {
+        if(!userRepository.findByUsername(username).isPresent()){
+            System.out.println("User not found while getting family photos");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not found while getting family photos");
+        }
+        Integer familyId = userRepository.findByUsername(username).get().getFamilyId();
+        if(familyId == null || familyId == -1){
+            System.out.println("User does not belong to any family");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User does not belong to any family");
+        }
+        Optional<Family> familyOpt = familyRepository.findById(familyId);
+        if (!familyOpt.isPresent()) {
+            System.out.println("Family not found with ID: " + familyId);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Family not found with ID: " );
+        }
+        Family family = familyOpt.get();
+        return ResponseEntity.ok(family.getFamilyPhotos());
+    }
+
+    public ResponseEntity<?> addFamilyPhotos(FamilyPhotosDTO photoIds) {
+        if(photoIds.getFamilyPhotos().size() == 0){
+            System.out.println("No photos to add");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No photos to add");
+
+        }
+
+        if(!userRepository.findByUsername(photoIds.getUsername()).isPresent()){
+            System.out.println("User not found while adding family photos");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not found while adding family photos");
+        }
+        Integer familyId = userRepository.findByUsername(photoIds.getUsername()).get().getFamilyId();
+        if(familyId == null || familyId == -1){
+            System.out.println("User does not belong to any family");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User does not belong to any family");
+        }
+        Optional<Family> familyOpt = familyRepository.findById(familyId);
+        if (!familyOpt.isPresent()) {
+            System.out.println("Family not found with ID: " + familyId);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Family not found with ID: " );
+        }
+        Family family = familyOpt.get();
+        List<String> familyPhotos = family.getFamilyPhotos();
+        familyPhotos.addAll(photoIds.getFamilyPhotos());
+        family.setFamilyPhotos(familyPhotos);
+        familyRepository.save(family);
+        return ResponseEntity.ok(family);
+    }
+
+    public ResponseEntity<?> setFamilyPhotos(FamilyPhotosDTO photos) {
+        if(!userRepository.findByUsername(photos.getUsername()).isPresent()){
+            System.out.println("User not found while setting family photos");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User not found while setting family photos");
+        }
+        Integer familyId = userRepository.findByUsername(photos.getUsername()).get().getFamilyId();
+        if(familyId == null || familyId == -1){
+            System.out.println("User does not belong to any family");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User does not belong to any family");
+        }
+        Optional<Family> familyOpt = familyRepository.findById(familyId);
+        if (!familyOpt.isPresent()) {
+            System.out.println("Family not found with ID: " + familyId);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Family not found with ID: " );
+        }
+        Family family = familyOpt.get();
+        family.setFamilyPhotos(photos.getFamilyPhotos());
+        familyRepository.save(family);
+        return ResponseEntity.ok(family);
+    }
+
+    //get family photos list
+    public List<String> getFamilyPhotosList(String username) {
+        if(!userRepository.findByUsername(username).isPresent()){
+            System.out.println("User not found while getting family photos");
+            return null;
+        }
+        Integer familyId = userRepository.findByUsername(username).get().getFamilyId();
+        if(familyId == null || familyId == -1){
+            System.out.println("User does not belong to any family");
+            return null;
+        }
+        Optional<Family> familyOpt = familyRepository.findById(familyId);
+        if (!familyOpt.isPresent()) {
+            System.out.println("Family not found with ID: " + familyId);
+            return null;
+        }
+        Family family = familyOpt.get();
+        return family.getFamilyPhotos();
+    }
 } 

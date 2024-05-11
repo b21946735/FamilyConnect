@@ -47,7 +47,7 @@ public class ProfileService {
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
-    public ResponseEntity<?> updateProfilePicture(String username, int profilePictureId) {
+    public ResponseEntity<?> updateProfilePictureOld(String username, int profilePictureId) {
         Optional<ApplicationUser> userOptional = userRepository.findByUsername(username);
         if(!userOptional.isPresent()){  
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
@@ -57,6 +57,17 @@ public class ProfileService {
         userRepository.save(user);
 
         // 
+        return ResponseEntity.status(HttpStatus.OK).body(user);
+    }
+
+    public ResponseEntity<?> updateProfilePictureUrl(UpdateProfilePictureUrlDTO updateProfilePictureUrlDTO) {
+        Optional<ApplicationUser> userOptional = userRepository.findByUsername(updateProfilePictureUrlDTO.getUsername());
+        if(!userOptional.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+        ApplicationUser user = userOptional.get();
+        user.setProfilePictureUrl(updateProfilePictureUrlDTO.getProfilePictureUrl());
+        userRepository.save(user);
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 

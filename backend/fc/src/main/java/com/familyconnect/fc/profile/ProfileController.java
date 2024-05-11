@@ -26,9 +26,18 @@ public class ProfileController {
         }
 
         //update profile picture id
-        @PutMapping("/updateProfilePicture/{username}/{profilePictureId}")
+        @PutMapping("/updateProfilePictureOld/{username}/{profilePictureId}")
         public ResponseEntity<?> updateProfilePicture(@PathVariable String username, @PathVariable int profilePictureId){
-            ResponseEntity<?> updatedProfile = profileService.updateProfilePicture(username, profilePictureId);
+            ResponseEntity<?> updatedProfile = profileService.updateProfilePictureOld(username, profilePictureId);
             return ResponseEntity.status(updatedProfile.getStatusCode()).body(updatedProfile.getBody());
         }
+
+        //update profile picture url
+        @PutMapping("/updateProfilePictureUrl")
+        public ResponseEntity<?> updateProfilePictureUrl(@RequestBody UpdateProfilePictureUrlDTO updateProfilePictureUrlDTO){
+            ResponseEntity<?> updatedProfile = profileService.updateProfilePictureUrl(updateProfilePictureUrlDTO);
+            return ResponseEntity.status(updatedProfile.getStatusCode()).body(updatedProfile.getBody());
+        }
+
+
 }
