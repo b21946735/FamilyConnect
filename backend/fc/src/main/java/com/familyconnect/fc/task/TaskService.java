@@ -147,12 +147,13 @@ public class TaskService {
 
         // check if task time is not passed if it is passed set task status to failed else set it to in progress
         OffsetDateTime now = OffsetDateTime.now();
-        if(rejectedTask.getTaskDueDate().withHour(23).isBefore(now)){
-            rejectedTask.setTaskStatus(TaskStatus.FAILED);
-        }
-        else{
-            rejectedTask.setTaskStatus(TaskStatus.IN_PROGRESS);
-        }
+        rejectedTask.setTaskStatus(TaskStatus.FAILED);
+        // if(rejectedTask.getTaskDueDate().withHour(23).isBefore(now)){
+            
+        // }
+        // else{
+        //     rejectedTask.setTaskStatus(TaskStatus.IN_PROGRESS);
+        // }
 
 
         
