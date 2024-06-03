@@ -5,3 +5,14 @@ Family Connect is an innovative Android application designed to bring families c
 
 Our Motivation
 In an era dominated by digital screens, familial bonds can fray, as smartphones and tablets often lead to fragmented communication and a lack of engagement within households. Our project's motivation lies in addressing these modern-day family challenges. We are driven by the desire to trigger family connections and simplify household task management while promoting positive behaviors among family members.
+
+
+
+Key Features
+Shared Calendar: A centralized calendar for scheduling and organizing family events, appointments, and activities. This feature helps streamline coordination, reduce scheduling conflicts, and encourage better organization within the household.
+
+Task Management: This feature allows users to assign tasks to each other. Completing tasks earns points, which can be used to forward progress then unlock rewards. Task verification ensures the authenticity of completed responsibilities, promoting accountability among family members.
+
+Positive Behavior Development: The application incorporates behavior development. It includes progresses, task, and rewards to instill positive behaviors and a sense of responsibility among children and teenagers.
+
+Family Chat: An integrated chat feature that allows family members to communicate in real-time. This enhances communication and helps in planning, coordinating, and sharing moments together, thereby strengthening family bonds.
