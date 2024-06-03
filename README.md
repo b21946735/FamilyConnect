@@ -19,4 +19,4 @@ Positive Behavior Development: The application incorporates behavior development
 Family Chat: An integrated chat feature that allows family members to communicate in real-time. This enhances communication and helps in planning, coordinating, and sharing moments together, thereby strengthening family bonds.
 
 
-https://family-connect.gitbook.io/app
+For more details, visit our [Family Connect GitBook](https://family-connect.gitbook.io/app).
